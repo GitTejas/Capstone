@@ -1,37 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useStoresContext } from "../context/StoresContext";
 
 function Stores() {
-    const [stores, setStores] = useState([]);
-
-    // Fetching stores data on component mount
-    useEffect(() => {
-        fetch('/stores')
-            .then((response) => response.json())
-            .then((data) => setStores(data))
-            .catch((error) => console.error('Error fetching stores:', error));
-    }, []);
+    const { stores, addStore } = useStoresContext();
 
     // Validation schema using Yup
     const validationSchema = Yup.object({
         name: Yup.string()
-            .required('Store name is required')
-            .min(2, 'Store name must be at least 2 characters')
-            .max(40, 'Store name must be less than 40 characters'),
+            .required("Store name is required")
+            .min(2, "Store name must be at least 2 characters")
+            .max(40, "Store name must be less than 40 characters"),
         location: Yup.string()
-            .required('Location is required')
-            .test('contains-both', 'Location must contain letters and numbers', (value) => {
+            .required("Location is required")
+            .test("contains-both", "Location must contain letters and numbers", (value) => {
                 return /\d/.test(value) && /[a-zA-Z]/.test(value);
             }),
         hours: Yup.string()
-            .required('Store hours are required')
+            .required("Store hours are required")
             .matches(/^(\d{1,2}):00\s*-\s*(\d{1,2}):00$/, 'Hours must be in the format "X:00 - Y:00"'),
     });
 
     // Formik hook saved to a variable
     const formik = useFormik({
-        initialValues: { name: '', location: '', hours: '' },
+        initialValues: { name: "", location: "", hours: "" },
         validationSchema: validationSchema,
         onSubmit: (values, { resetForm, setSubmitting }) => {
             const newStore = {
@@ -40,27 +33,9 @@ function Stores() {
                 hours: values.hours,
             };
 
-            fetch('/stores', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newStore),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error('Failed to add store');
-                    }
-                    return response.json();
-                })
-                .then((addedStore) => {
-                    setStores((prevStores) => [...prevStores, addedStore]);
-                    resetForm();
-                })
-                .catch((error) => {
-                    console.error('Error adding store:', error);
-                })
-                .finally(() => {
-                    setSubmitting(false);
-                });
+            addStore(newStore); // Use context function to add store
+            resetForm();
+            setSubmitting(false);
         },
     });
 
@@ -78,7 +53,7 @@ function Stores() {
                         onBlur={formik.handleBlur}
                     />
                     {formik.errors.name && formik.touched.name && (
-                        <div style={{ color: 'red' }}>{formik.errors.name}</div>
+                        <div style={{ color: "red" }}>{formik.errors.name}</div>
                     )}
                 </div>
                 <div>
@@ -91,7 +66,7 @@ function Stores() {
                         onBlur={formik.handleBlur}
                     />
                     {formik.errors.location && formik.touched.location && (
-                        <div style={{ color: 'red' }}>{formik.errors.location}</div>
+                        <div style={{ color: "red" }}>{formik.errors.location}</div>
                     )}
                 </div>
                 <div>
@@ -104,7 +79,7 @@ function Stores() {
                         onBlur={formik.handleBlur}
                     />
                     {formik.errors.hours && formik.touched.hours && (
-                        <div style={{ color: 'red' }}>{formik.errors.hours}</div>
+                        <div style={{ color: "red" }}>{formik.errors.hours}</div>
                     )}
                 </div>
                 <button

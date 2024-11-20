@@ -1,20 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import React, { useContext, useRef } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { GameContext } from "./GameContext";
 
 function GameManager() {
-    const [games, setGames] = useState([]);
-    const [isEditing, setIsEditing] = useState(false);
-    const [currentGame, setCurrentGame] = useState(null);
-    const [sortBy, setSortBy] = useState("");
+    const {
+        games,
+        sortBy,
+        setSortBy,
+        fetchGames,
+        addOrUpdateGame,
+        deleteGame,
+    } = useContext(GameContext);
+    const [isEditing, setIsEditing] = React.useState(false);
+    const [currentGame, setCurrentGame] = React.useState(null);
     const formRef = useRef(null);
 
-    useEffect(() => {
-        fetch("/games")
-            .then((response) => response.json())
-            .then((data) => setGames(data))
-            .catch((error) => console.error("Error fetching games:", error));
-    }, []);
+    // Fetch games on component mount
+    React.useEffect(() => {
+        fetchGames();
+    }, [fetchGames]);
 
     // Handle sorting based on sortBy value
     const sortedGames = [...games].sort((a, b) => {
@@ -55,28 +60,8 @@ function GameManager() {
 
     // Handle form submission
     const handleSubmit = (values, { resetForm, setSubmitting }) => {
-        const method = isEditing ? "PATCH" : "POST";
-        const url = isEditing ? `/games/${currentGame.id}` : "/games";
-
-        fetch(url, {
-            method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(values),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Server validation failed");
-                }
-                return response.json();
-            })
-            .then((addedGame) => {
-                setGames((prevGames) =>
-                    isEditing
-                        ? prevGames.map((game) =>
-                              game.id === addedGame.id ? addedGame : game
-                          )
-                        : [...prevGames, addedGame]
-                );
+        addOrUpdateGame({ ...values, id: currentGame?.id })
+            .then(() => {
                 resetForm();
                 setIsEditing(false);
                 setCurrentGame(null);
@@ -104,14 +89,6 @@ function GameManager() {
         if (formRef.current) {
             formRef.current.scrollIntoView({ behavior: "smooth" });
         }
-    };
-
-    const deleteGame = (id) => {
-        fetch(`/games/${id}`, { method: "DELETE" })
-            .then(() =>
-                setGames((prevGames) => prevGames.filter((game) => game.id !== id))
-            )
-            .catch((error) => console.error("Error deleting game:", error));
     };
 
     return (

@@ -1,32 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { ListingsContext } from './ListingsContext';
 
 function Listings() {
-  const [listings, setListings] = useState([]);
+  const { listings, games, stores, setListings } = useContext(ListingsContext);
   const [editingListing, setEditingListing] = useState(null);
   const [sortCriterion, setSortCriterion] = useState('');
   const [priceFilter, setPriceFilter] = useState('all');
-  const [games, setGames] = useState([]); 
-  const [stores, setStores] = useState([]);
-
-  // Fetch listings, games, and stores
-  useEffect(() => {
-    fetch('/listings')
-      .then((response) => response.json())
-      .then((data) => setListings(data))
-      .catch((error) => console.error('Error fetching listings:', error));
-
-    Promise.all([
-      fetch('/games').then((res) => res.json()),
-      fetch('/stores').then((res) => res.json()),
-    ])
-      .then(([gamesData, storesData]) => {
-        setGames(gamesData);
-        setStores(storesData);
-      })
-      .catch((error) => console.error('Error fetching games and stores:', error));
-  }, []);
 
   // Filter and sort listings
   const filteredAndSortedListings = [...listings]
@@ -127,14 +108,13 @@ function Listings() {
       game_id: listing.game_id || '',
       store_id: listing.store_id || '',
     });
-  
-    // Scroll to the form after setting the values for editing
+
     window.scrollTo({
-      top: document.getElementById('form-container').offsetTop, 
-      behavior: 'smooth', 
+      top: document.getElementById('form-container').offsetTop,
+      behavior: 'smooth',
     });
   };
-  
+
   const handleDelete = (id) => {
     fetch(`/listings/${id}`, {
       method: 'DELETE',
@@ -257,7 +237,6 @@ function Listings() {
           </li>
         ))}
       </ul>
-
     </div>
   );
 }

@@ -4,8 +4,9 @@ from flask import request, make_response, abort
 from flask_restful import Resource
 from sqlalchemy import func
 from config import app, db, api
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
-from models import Game, Store, Listing
+from models import Game, Store, Listing, User
 
 @app.route('/')
 def index():
@@ -189,12 +190,38 @@ class ListingsById(Resource):
             return {'error': 'Listing not found'}, 404
     
 
+
+# Resource for Login
+class LoginResource(Resource):
+    def post(self):
+        data = request.get_json()
+        user = User.query.filter_by(username=data["username"]).first()
+        if user and user.check_password(data["password"]):
+            token = create_access_token(identity=user.id)
+            return {"access_token": token}, 200
+        return {"error": "Invalid credentials"}, 401
+
+
+# Resource for Protected Route
+class ProtectedResource(Resource):
+    @jwt_required()
+    def get(self):
+        current_user_id = get_jwt_identity()
+        return {"message": f"Hello User {current_user_id}"}
+
+
+# Add resources to the API
+
+
 api.add_resource(Games, "/games")
 api.add_resource(GamesById, "/games/<int:id>")
 api.add_resource(Stores, "/stores")
 api.add_resource(StoresById, "/stores/<int:id>")
 api.add_resource(Listings, "/listings")
 api.add_resource(ListingsById, '/listings/<int:id>')
+api.add_resource(LoginResource, "/login")
+api.add_resource(ProtectedResource, "/protected")
+
 
 
 if __name__ == '__main__':
