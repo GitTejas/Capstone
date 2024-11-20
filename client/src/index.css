@@ -1,7 +1,363 @@
 :root {
+  --bg: linear-gradient(135deg, #222222, #6c757d);
+  --header: #f8f9fa;
+  --link: #f1c40f;
+  --link-hover: #e67e22;
+  --text: rgba(255, 255, 255, 0.85);
+  --card-bg: #343a40;
+  --form-bg: #495057;
+  --form-border: #f39c12;
+  --form-hover: #000000;
+}
+
+body {
+  font-family: 'Lora', serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+nav ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-evenly;
+  background-color: #212529;
+  padding: 14px;
+  border-radius: 8px;
+}
+
+nav ul li {
+  margin: 0 8px;
+}
+
+nav ul li a {
+  color: var(--link);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s, text-shadow 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: var(--link-hover);
+  text-shadow: 0 0 12px var(--link-hover);
+}
+
+h1, h2, h3 {
+  text-align: center;
+  color: var(--header);
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Form Section */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+form input, form button, form select {
+  display: block;
+  padding: 16px;
+  width: 100%;
+  border-radius: 8px;
+  border: 2px solid var(--form-border);
+  background-color: var(--form-bg);
+  color: #ffffff;
+  transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+}
+
+form input:focus, form select:focus, form button:hover {
+  background-color: var(--form-hover);
+  box-shadow: 0 0 10px rgba(243, 156, 18, 0.6);
+  transform: scale(1.05);
+}
+
+/* Listings Card Style */
+ul li {
+  margin: 14px 0;
+  padding: 18px;
+  background-color: var(--card-bg);
+  border: 1px solid #212529;
+  border-radius: 10px;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+ul li:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Game Title and Store Name Styling */
+ul li .listing-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--header);
+}
+
+ul li .listing-store {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--link);
+}
+
+/* Additional Info Styling */
+ul li .listing-details {
+  font-size: 0.9rem;
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap; /* Adjust for smaller screens */
+  gap: 4px;
+}
+
+ul li .listing-details span {
+  margin-right: 10px; /* Add spacing between details */
+}
+
+ul li .listing-details span:last-child {
+  font-style: italic; /* Different style for 'Listed on' */
+  color: var(--muted-text); /* Lighter color for date */
+}
+
+
+
+/* Additional Info Styling */
+ul li .listing-details {
+  font-size: 0.9rem;
+  color: var(--text);
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two-column layout */
+  gap: 8px 20px; /* Spacing between columns and rows */
+  align-items: center;
+}
+
+ul li .listing-details .price-condition,
+ul li .listing-details .stock-date {
+  display: flex;
+  justify-content: space-between;
+}
+
+ul li .listing-details .price {
+  font-weight: bold;
+  color: var(--price-color); /* Make price stand out */
+}
+
+ul li .listing-details .condition {
+  color: var(--highlight); /* Different color for condition */
+}
+
+ul li .listing-details .stock {
+  font-weight: 500;
+  color: var(--text); /* Regular color for stock */
+}
+
+ul li .listing-details .date {
+  font-style: italic;
+  color: var(--muted-text); /* Muted color for listed date */
+}
+
+/* Button Styling */
+ul li button {
+  padding: 6px 10px; /* Smaller padding for a compact size */
+  background-color: #d89c10; /* Subtle, muted gold */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem; /* Slightly smaller font */
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  margin: 5px 4px; /* Small margin for spacing between buttons */
+}
+
+/* Spacing for structured layout */
+ul li .buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+ul li button:hover {
+  background-color: #c5850e; /* Darker gold on hover */
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+/* Button Container to Align Buttons */
+ul li .button-group {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start; /* Align buttons to the left */
+  margin-top: 8px; /* Space between buttons and other content */
+}
+
+/* Image Styling */
+ul li img {
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+/* Game Title and Text Styling */
+ul li h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--header);
+}
+
+ul li p {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+
+/* :root {
   --bg: #282c34;
   --header: #fff;
   --link: #61dafb;
   --text: hsla(0, 0%, 100%, 0.88);
 }
 
+body {
+  font-family: Arial, sans-serif;
+}
+
+nav ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-around;
+  background-color: #333;
+  padding: 10px;
+}
+
+nav ul li {
+  margin: 0;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+h1, h2, h3 {
+  text-align: center;
+}
+
+form input, form button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 80%;
+  max-width: 400px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+} */
+
+
+
+
+
+
+
+
+/*
+:root {
+  --bg: linear-gradient(135deg, #282c34, #1e2126);
+  --header: #fff;
+  --link: #61dafb;
+  --link-hover: #33aaff;
+  --text: hsla(0, 0%, 100%, 0.88);
+  --card-bg: #333;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+nav ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-around;
+  background-color: #333;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+nav ul li {
+  margin: 0;
+}
+
+nav ul li a {
+  color: var(--link);
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+
+nav ul li a:hover {
+  color: var(--link-hover);
+  text-shadow: 0 0 8px var(--link-hover);
+}
+
+h1, h2, h3 {
+  text-align: center;
+  color: var(--header);
+}
+
+form input, form button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 80%;
+  max-width: 400px;
+  border-radius: 5px;
+  border: 1px solid #444;
+  background-color: #222;
+  color: var(--text);
+  transition: box-shadow 0.3s;
+}
+
+form button:hover {
+  box-shadow: 0 0 10px rgba(97, 218, 251, 0.5);
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  margin: 10px 0;
+  padding: 15px;
+  background-color: var(--card-bg);
+  border: 1px solid #444;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+ul li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+}
+
+*/
