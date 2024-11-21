@@ -1,23 +1,30 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import GameManager from "./GameManager";
-import Navbar from "./NavBar";
-import Stores from "./Stores";
-import Listings from "./Listings";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AppProvider } from './AppContext';
+import Navbar from './NavBar';
+import MovieList from './MovieList';
+import RentalList from './RentalList';
+import UsersList from './UsersList';
+import RatingsList from './RatingList'; // Import RatingsList
+import NewForm from './NewForm';
+// import MovieForm from './MovieForm';
+// import RatingDetail from './RatingDetail'; // Optional: if you have a detail page
 
 function App() {
   return (
-    <Router>
-      <div className="App">
+    <AppProvider>
+      <Router>
         <Navbar />
-        <h1>GameNest</h1>
         <Routes>
-          <Route path="/" element={<GameManager />} />
-          <Route path="stores" element={<Stores />} />
-          <Route path="listings" element={<Listings />} />
+          {/* <Route path="/" element={<MovieForm />} /> */}
+          <Route path="/movies" element={<MovieList />} />
+          <Route path="/rentals" element={<RentalList />} />
+          <Route path="/users" element={<UsersList />} />
+          <Route path="/ratings" element={<RatingsList />} /> {/* Add this route */}
+          <Route path="/newform" element={<NewForm />} /> {/* This route will render NewForm */}
         </Routes>
-      </div>
-    </Router>
+      </Router>
+    </AppProvider>
   );
 }
 

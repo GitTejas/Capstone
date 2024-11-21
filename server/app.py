@@ -6,221 +6,88 @@ from sqlalchemy import func
 from config import app, db, api
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
-from models import Game, Store, Listing, User
+from models import User, Movie, Rental, Rating
 
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
 
-class Games(Resource):
+# User Resource
+class UserResource(Resource):
     def get(self):
-        games = [game.to_dict(rules=("-listings",)) for game in Game.query.all()]
-        return make_response(games, 200)
+        users = User.query.all()
+        return [user.to_dict() for user in users], 200
 
     def post(self):
-        json = request.get_json()
-        try:
-            new_game = Game(
-                title = json['title'],
-                rating = json['rating'],
-                console = json['console'],
-                genre = json['genre'],
-                image = json['image']
-            )
-            db.session.add(new_game)
-            db.session.commit()
-            return make_response(new_game.to_dict(), 201)
-        
-        except ValueError as e:
-            return {'errors': str(e)}, 400
-        
-        except Exception as e:
-            return {"errors": "Failed to add game to database", 'message': str(e)}, 500
-          
+        data = request.json
+        user = User(name=data['name'], email=data['email'])
+        db.session.add(user)
+        db.session.commit()
+        return user.to_dict(), 201
 
-class GamesById(Resource):
-    def get(self, id):
-        game = Game.query.filter(Game.id == id).first()
-        return make_response(game.to_dict(rules=("-listings",)), 200)
-
-    def patch(self, id):
-        json = request.get_json()
-        game = Game.query.filter(Game.id == id).first()
-        if game:
-            try:
-                setattr(game, "title", json['title'])
-                setattr(game, "rating", json['rating'])
-                setattr(game, "console", json['console'])
-                setattr(game, "genre", json['genre'])
-                setattr(game, "image", json['image'])
-                db.session.add(game)
-                db.session.commit()
-                return make_response(game.to_dict(rules=("-listings",)), 202)
-            except Exception as e:
-                return make_response({"errors": "Failed to update game", "message": str(e)}, 400)
-        else:
-            return make_response({ "error": "Game not found"}, 400)
-    
-    def delete(self, id):
-        game = Game.query.filter(Game.id == id).first()
-
-        if game:
-            db.session.delete(game)
-            db.session.commit()
-            return {}, 204
-        else:
-            return {'error': 'Game not found'}, 404
-
-
-class Stores(Resource):
+# Movie Resource
+class MovieResource(Resource):
     def get(self):
-        stores = [stores.to_dict(rules=("-listings",)) for stores in Store.query.all()]
-        return make_response(stores, 200)
+        movies = Movie.query.all()
+        return [movie.to_dict() for movie in movies], 200
 
     def post(self):
-        json = request.get_json()
-        try:
-            new_store = Store(
-                name = json['name'],
-                location = json['location'],
-                hours = json['hours'] 
-            )
-            db.session.add(new_store)
-            db.session.commit()
-            return make_response(new_store.to_dict(), 201)
-        except ValueError as e:
-            return {'errors': str(e)}, 400
-        except Exception as e:
-            return {"errors": "Failed to add store to database", 'message': str(e)}, 500
+        data = request.json
+        movie = Movie(title=data['title'], genre=data['genre'], release_year=data['release_year'])
+        db.session.add(movie)
+        db.session.commit()
+        return movie.to_dict(), 201
 
-class StoresById(Resource):
-    def get(self, id):
-        store = Store.query.filter(Store.id == id).first()
-        return make_response(store.to_dict(rules=("-listings",)), 200)
-    
-    def patch(self, id):
-        json = request.get_json()
-        store = Store.query.filter(Store.id == id).first()
-        if store:
-            try:
-                setattr(store, "name", json['name'])
-                setattr(store, "location", json['location'])
-                setattr(store, "hours", json['hours'])
-                db.session.add(store)
-                db.session.commit()
-                return make_response(store.to_dict(rules=("-listings",)), 202)
-            except ValueError:
-                return make_response({'errors': ["validation errors"]}, 400)
-        else:
-            return make_response({ "error": "Store not found"}, 400)    
-
-    def delete(self, id):
-        store = Store.query.filter(Store.id == id).first()
-
-        if store:
-            db.session.delete(store)
-            db.session.commit()
-            return {}, 204
-        else:
-            return {'error': 'Store not found'}, 404
-                
-
-class Listings(Resource):
+# Rental Resource
+class RentalResource(Resource):
     def get(self):
-        listings = [listings.to_dict() for listings in Listing.query.all()]
-        return make_response(listings, 200)
+        rentals = Rental.query.all()
+        return [rental.to_dict() for rental in rentals], 200
 
     def post(self):
-        json = request.get_json()
-        try:
-            game = Game.query.get(json['game_id'])
-            store = Store.query.get(json['store_id'])
-            
-            if not game or not store:
-                return make_response({'error': 'Game or Store not found'}, 404)
-            # Create the new listing
-            new_listing = Listing(
-                condition=json['condition'],
-                stock=json['stock'],
-                price=json['price'],
-                game=game,  # Associate the game object
-                store=store  # Associate the store object
-            )
-            db.session.add(new_listing)
-            db.session.commit()
-            return make_response(new_listing.to_dict(), 201)
-        except Exception as e:
-            return {"errors": "Failed to add listing", 'message': str(e)}, 500
+        data = request.json
         
-class ListingsById(Resource):
-    def get(self, id):
-        listings = Listing.query.filter(Listing.id == id).first()
-        return make_response(listings.to_dict(), 200)
-
-    def patch(self, id):
-        json = request.get_json()
-        listing = Listing.query.filter_by(id=id).first()
+        # Ensure that 'user_id', 'movie_id', and 'due_date' are in the request
+        if not all(key in data for key in ['user_id', 'movie_id', 'due_date']):
+            return {'message': 'Missing required fields'}, 400
         
-        if listing:
-            game = Game.query.get(json['game_id'])
-            store = Store.query.get(json['store_id'])
-            
-            if game:
-                listing.game = game
-            if store:
-                listing.store = store
-            
-            listing.condition = json['condition']
-            listing.stock = json['stock']
-            listing.price = json['price']
-
-            db.session.commit()
-            return make_response(listing.to_dict(), 202)
-        else:
-            return make_response({'error': 'Listing not found'}, 404)
-
-    def delete(self, id):
-        listing = Listing.query.filter(Listing.id == id).first()
-
-        if listing:
-            db.session.delete(listing)
-            db.session.commit()
-            return {}, 204
-        else:
-            return {'error': 'Listing not found'}, 404
-    
+        rental = Rental(
+            user_id=data['user_id'], 
+            movie_id=data['movie_id'], 
+            due_date=data['due_date']
+        )
+        
+        # Add the rental to the session and commit
+        db.session.add(rental)
+        db.session.commit()
+        
+        return rental.to_dict(), 201
 
 
-# Resource for Login
-class LoginResource(Resource):
-    def post(self):
-        data = request.get_json()
-        user = User.query.filter_by(username=data["username"]).first()
-        if user and user.check_password(data["password"]):
-            token = create_access_token(identity=user.id)
-            return {"access_token": token}, 200
-        return {"error": "Invalid credentials"}, 401
+# Rating Resource
+class RatingResource(Resource):
 
-
-# Resource for Protected Route
-class ProtectedResource(Resource):
-    @jwt_required()
     def get(self):
-        current_user_id = get_jwt_identity()
-        return {"message": f"Hello User {current_user_id}"}
+        ratings = Rating.query.all()
+        return [rating.to_dict() for rating in ratings], 200
 
+    def post(self):
+        data = request.json
+        rating = Rating(
+            user_id=data['user_id'], 
+            movie_id=data['movie_id'], 
+            rating=data['rating'], 
+            review=data.get('review')
+        )
+        db.session.add(rating)
+        db.session.commit()
+        return rating.to_dict(), 201
 
-# Add resources to the API
-
-
-api.add_resource(Games, "/games")
-api.add_resource(GamesById, "/games/<int:id>")
-api.add_resource(Stores, "/stores")
-api.add_resource(StoresById, "/stores/<int:id>")
-api.add_resource(Listings, "/listings")
-api.add_resource(ListingsById, '/listings/<int:id>')
-api.add_resource(LoginResource, "/login")
-api.add_resource(ProtectedResource, "/protected")
+# Register resources with routes
+api.add_resource(UserResource, '/users')
+api.add_resource(MovieResource, '/movies')
+api.add_resource(RentalResource, '/rentals')
+api.add_resource(RatingResource, '/ratings')
 
 
 

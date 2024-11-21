@@ -9,85 +9,101 @@ from faker import Faker
 
 # Local imports
 from app import app
-from models import db, Game, Store, Listing
+from models import db, User, Movie, Rental, Rating
 
 if __name__ == '__main__':
     fake = Faker()
     with app.app_context():
         print("Starting seed...")
 
+        # Drop existing tables and create new ones
         db.drop_all()
         db.create_all()
 
-        predefined_games = [
-            {"title": "Mega Man", "image": "https://upload.wikimedia.org/wikipedia/en/b/bf/Mega_Man_X4_PSX.jpg"},
-            {"title": "Donkey Kong", "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSuZ4WZ1W_-MfVFcVHuiXseEXJ5YeW5yQAdEb7BQ4thjhQRqp3FTDo4m8T7wXmodDkYDssk"},
-            {"title": "Rise of the Ronin", "image": "https://image.api.playstation.com/vulcan/ap/rnd/202212/2201/ZfPosZoz1CKZBHTIKUCQRy47.png"},
-            {"title": "Super Smash Bros.", "image": "https://assets.nintendo.com/image/upload/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000012332/ac4d1fc9824876ce756406f0525d50c57ded4b2a666f6dfe40a6ac5c3563fad9"},
-            {"title": "Kingdom Hearts", "image": "https://m.media-amazon.com/images/I/918AUL+i-DL.jpg"},
-            {"title": "Nioh II", "image": "https://image.api.playstation.com/vulcan/img/rnd/202011/0423/P7Sm4r3F8krCQcnN5uqwsS00.png"},
-            {"title": "Elden Ring", "image": "https://image.api.playstation.com/vulcan/ap/rnd/202110/2000/aGhopp3MHppi7kooGE2Dtt8C.png"},
-            {"title": "Dark Souls III", "image": "https://static.bandainamcoent.eu/high/dark-souls/dark-souls-3/00-page-setup/ds3_game-thumbnail.jpg"},
-            {"title": "Pokemon Fallen Thrones", "image": "https://i.imgur.com/VP0VH7E.png"},
-            {"title": "Ninja Gaiden", "image": "https://www.lilithia.net/wp-content/uploads/2021/06/ninjagaidencollection-1576x1182.jpg"},
-            {"title": "The Legend of Zelda: Breath of the Wild", "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSO0-bXLKMPSHQECjZUuy4gbwdgmF-7sfhHQ0b59Q2nv8ZZiBzgHEu5mwDuVLBPf71rkB_zQA"},
-            {"title": "Grand Theft Auto V", "image": "https://upload.wikimedia.org/wikipedia/en/a/a5/Grand_Theft_Auto_V.png"},
-            {"title": "Cyberpunk", "image": "https://upload.wikimedia.org/wikipedia/en/9/9f/Cyberpunk_2077_box_art.jpg"},
-            {"title": "The Witcher III: Wild Hunt", "image": "https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg"}
+        # Seeding Users
+        print("Seeding Users...")
+        users = []
+        for _ in range(10):
+            user = User(
+                name=fake.name(),
+                email=fake.email()
+            )
+            users.append(user)
+            db.session.add(user)
+
+        # Seeding Movies
+        predefined_movies = [
+            {"title": "The Shawshank Redemption", "image": "https://upload.wikimedia.org/wikipedia/en/8/81/ShawshankRedemptionMoviePoster.jpg"},
+            {"title": "The Godfather", "image": "https://upload.wikimedia.org/wikipedia/en/1/1c/Godfather_ver1.jpg"},
+            {"title": "The Dark Knight", "image": "https://upload.wikimedia.org/wikipedia/en/8/8a/Dark_Knight.jpg"},
+            {"title": "Pulp Fiction", "image": "https://upload.wikimedia.org/wikipedia/en/8/82/Pulp_Fiction_cover.jpg"},
+            {"title": "Forrest Gump", "image": "https://upload.wikimedia.org/wikipedia/en/6/67/Forrest_Gump_poster.jpg"},
+            {"title": "Inception", "image": "https://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg"},
+            {"title": "Interstellar", "image": "https://upload.wikimedia.org/wikipedia/en/b/bc/Interstellar_film_poster.jpg"},
+            {"title": "Parasite", "image": "https://upload.wikimedia.org/wikipedia/en/5/53/Parasite_%282019_film%29.png"},
+            {"title": "Joker", "image": "https://upload.wikimedia.org/wikipedia/en/e/e1/Joker_%282019_film%29_poster.jpg"},
+            {"title": "Avengers: Endgame", "image": "https://upload.wikimedia.org/wikipedia/en/0/0d/Avengers_Endgame_poster.jpg"},
         ]
 
-        print("Seeding Games...")
-        for game_data in predefined_games:
-            game = Game(
-                title=game_data["title"],
-                rating=rc(["E", "T", "M"]),
-                console=rc(["PlayStation", "Xbox", "PC", "Nintendo Switch"]),
-                genre=rc(["Action", "Adventure", "RPG", "Strategy", "Shooter"]),
-                image=game_data["image"]
+        print("Seeding Movies...")
+        movies = []
+        for movie_data in predefined_movies:
+            movie = Movie(
+                title=movie_data["title"],
+                genre=rc(["Drama", "Action", "Thriller", "Comedy", "Sci-Fi"]),
+                release_year=fake.date_between(start_date="-20y", end_date="today"),
+                image=movie_data["image"]
             )
-            db.session.add(game)
+            movies.append(movie)
+            db.session.add(movie)
 
-        predefined_stores = [
-            {"name": "GameStop", "location": "640 Camino Del Rio N STE 317A, San Diego, CA 92108"},
-            {"name": "EB Games", "location": "2612 S Shepherd Dr Houston, TX 77098"},
-            {"name": "Best Buy", "location": "3 Mill Creek Dr, Secaucus, NJ 07094"},
-            {"name": "Electronics Boutique", "location": "2589 Walter Green Cmns, Madison, OH 44057"},
-            {"name": "Gaming Odyssey", "location": "1400 Skyline Blvd, Bismarck, ND 58503"},
-        ]
+        # Ensure users and movies are populated before proceeding to Rentals
+        print("Seeding Rentals...")
 
-        print("Seeding Stores...")
-        for store_data in predefined_stores:
-            store = Store(
-                name=store_data["name"],
-                location=store_data["location"],
-                hours=f"{randint(8, 10)}:00 - {randint(18, 22)}:00"
-            )
-            db.session.add(store)
+        if users and movies:  # Check if there are any users and movies
+            for _ in range(15):
+                # Randomly select a movie and user
+                movie_id = rc([movie.id for movie in movies])  
+                user_id = rc([user.id for user in users])  
 
-        print("Seeding additional random Stores...")
-        for _ in range(5 - len(predefined_stores)):
-            store = Store(
-                name=fake.company(),
-                location=fake.address(),
-                hours=f"{randint(8, 10)}:00 - {randint(18, 22)}:00"
-            )
-            db.session.add(store)
+                # Set a realistic due_date between 1 and 3 weeks from now
+                due_date = datetime.today() + timedelta(days=randint(7, 21))  
 
-        db.session.commit()
+                # Simulate rented_at and return_date (return_date will be after due_date)
+                rented_at = datetime.today() - timedelta(days=randint(1, 7))  # Rented between 1 and 7 days ago
+                return_date = rented_at + timedelta(days=randint(7, 14))  # Return between 7 and 14 days after rented_at
 
-        print("Seeding Listings...")
+                # Debug: print selected IDs and dates
+                print(f"Selected movie_id: {movie_id}, user_id: {user_id}, rented_at: {rented_at}, due_date: {due_date}, return_date: {return_date}")
+
+                # Ensure the random movie and user ids are valid
+                if movie_id is not None and user_id is not None:
+                    rental = Rental(
+                        user_id=user_id,
+                        movie_id=movie_id,
+                        rented_at=rented_at,
+                        due_date=due_date,
+                        return_date=return_date
+                    )
+                    db.session.add(rental)
+                else:
+                    print(f"Skipping rental creation: invalid movie_id {movie_id} or user_id {user_id}")
+
+            db.session.commit()
+            print("Seeding Rentals complete!")
+        else:
+            print("Error: No users or movies found. Please ensure they are seeded first.")
+
+        # Seeding Ratings
+        print("Seeding Ratings...")
         for _ in range(20):
-            created_at = fake.date_this_month(before_today=True, after_today=False)
-            listing = Listing(
-                price=round(randint(5, 60) + randint(0, 99) / 100, 2),
-                stock=randint(0, 100),
-                condition=rc(["New", "Used"]),
-                game_id=rc([game.id for game in Game.query.all()]),
-                store_id=rc([store.id for store in Store.query.all()]),
-                created_at=created_at
+            rating = Rating(
+                rating=randint(1, 5),
+                review=fake.sentence(nb_words=10),
+                user_id=rc([user.id for user in users]),  # Randomly select a user
+                movie_id=rc([movie.id for movie in movies])  # Randomly select a movie
             )
-            db.session.add(listing)
+            db.session.add(rating)
 
         db.session.commit()
-
         print("Seeding complete!")
