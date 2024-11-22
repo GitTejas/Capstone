@@ -5,42 +5,66 @@ export const AppContext = createContext();
 
 // Context provider
 export const AppProvider = ({ children }) => {
-    const [movies, setMovies] = useState([]);
-    const [rentals, setRentals] = useState([]);
-    const [users, setUsers] = useState([]);
-    const [ratings, setRatings] = useState([]); // Add ratings state
+    // State for various data categories
+    const [members, setMembers] = useState([]);
+    const [workouts, setWorkouts] = useState([]);
+    const [exercises, setExercises] = useState([]);
+    const [goals, setGoals] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null); // Error state for better handling
 
     useEffect(() => {
-        // Fetch all initial data including ratings
+        // Fetch all initial workout-related data
         Promise.all([
-            fetch('/movies').then((res) => res.json()),
-            fetch('/rentals').then((res) => res.json()),
-            fetch('/users').then((res) => res.json()),
-            fetch('/ratings').then((res) => res.json()), // Add ratings API endpoint
+            fetch('/members').then((res) => res.json()),
+            fetch('/workouts').then((res) => res.json()),
+            fetch('/exercises').then((res) => res.json()),
+            fetch('/goals').then((res) => res.json())
         ])
-            .then(([moviesData, rentalsData, usersData, ratingsData]) => {
-                setMovies(moviesData);
-                setRentals(rentalsData);
-                setUsers(usersData);
-                setRatings(ratingsData); // Set the ratings data
+            .then(([membersData, workoutsData, exercisesData, goalsData]) => {
+                setMembers(membersData);
+                setWorkouts(workoutsData);
+                setExercises(exercisesData);
+                setGoals(goalsData);
                 setLoading(false);
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
+                setError('Failed to load data.'); // Set error message
                 setLoading(false);
             });
     }, []);
 
-    // Function to add a new movie
-    const addMovie = (newMovie) => {
-        // Ideally, this would be a POST request to your backend API
-        // to save the movie in your database
-        setMovies((prevMovies) => [...prevMovies, newMovie]);
+    // Functions to add new items to the state
+    const addMember = (newMember) => {
+        setMembers((prevMembers) => [...prevMembers, newMember]);
+    };
+
+    const addWorkout = (newWorkout) => {
+        setWorkouts((prevWorkouts) => [...prevWorkouts, newWorkout]);
+    };
+
+    const addExercise = (newExercise) => {
+        setExercises((prevExercises) => [...prevExercises, newExercise]);
+    };
+
+    const addGoal = (newGoal) => {
+        setGoals((prevGoals) => [...prevGoals, newGoal]);
     };
 
     return (
-        <AppContext.Provider value={{ movies, rentals, users, ratings, loading, setMovies, setRentals, setUsers, setRatings, addMovie }}>
+        <AppContext.Provider value={{
+            members,
+            workouts,
+            exercises,
+            goals,
+            loading,
+            error,  // Provide error state for UI feedback
+            addMember,
+            addWorkout,
+            addExercise,
+            addGoal
+        }}>
             {children}
         </AppContext.Provider>
     );
