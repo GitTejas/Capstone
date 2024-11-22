@@ -5,24 +5,23 @@ import Navbar from './NavBar';
 import MovieList from './MovieList';
 import RentalList from './RentalList';
 import UsersList from './UsersList';
-import RatingsList from './RatingList'; // Import RatingsList
+import RatingsList from './RatingList'; 
 import NewForm from './NewForm';
-// import MovieForm from './MovieForm';
-// import RatingDetail from './RatingDetail'; // Optional: if you have a detail page
 
 function App() {
   return (
     <AppProvider>
       <Router>
         <Navbar />
-        <Routes>
-          {/* <Route path="/" element={<MovieForm />} /> */}
-          <Route path="/movies" element={<MovieList />} />
-          <Route path="/rentals" element={<RentalList />} />
-          <Route path="/users" element={<UsersList />} />
-          <Route path="/ratings" element={<RatingsList />} /> {/* Add this route */}
-          <Route path="/newform" element={<NewForm />} /> {/* This route will render NewForm */}
-        </Routes>
+        <div className="container mx-auto px-4 py-4">
+          <Routes>
+            <Route path="/movies" element={<MovieList />} />
+            <Route path="/rentals" element={<RentalList />} />
+            <Route path="/users" element={<UsersList />} />
+            <Route path="/ratings" element={<RatingsList />} />
+            <Route path="/newform" element={<NewForm />} />
+          </Routes>
+        </div>
       </Router>
     </AppProvider>
   );
