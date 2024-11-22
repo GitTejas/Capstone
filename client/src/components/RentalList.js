@@ -104,26 +104,29 @@ function RentalList() {
                 <table className="min-w-full table-auto mt-6">
                     <thead>
                         <tr>
-                            <th className="px-4 py-2 text-left">Rental ID</th>
                             <th className="px-4 py-2 text-left">User</th>
                             <th className="px-4 py-2 text-left">Movie</th>
                             <th className="px-4 py-2 text-left">Due Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {rentals.map((rental) => (
-                            <tr key={rental.id}>
-                                <td className="border px-4 py-2">{rental.id}</td>
-                                <td className="border px-4 py-2">{rental.user_id}</td>
-                                <td className="border px-4 py-2">{rental.movie_id}</td>
-                                <td className="border px-4 py-2">{rental.due_date}</td>
-                                <td className="border px-4 py-2">
-                                    {rental.due_date && !isNaN(new Date(rental.due_date))
-                                        ? new Date(rental.due_date).toLocaleDateString()
-                                        : 'Invalid Date'}
-                                </td>
-                            </tr>
-                        ))}
+                        {rentals.map((rental) => {
+                            // Find the user and movie by their IDs
+                            const user = users.find(user => user.id === rental.user_id);
+                            const movie = movies.find(movie => movie.id === rental.movie_id);
+
+                            return (
+                                <tr key={rental.id}>
+                                    <td className="border px-4 py-2">{user ? user.name : 'User Not Found'}</td>
+                                    <td className="border px-4 py-2">{movie ? movie.title : 'Movie Not Found'}</td>
+                                    <td className="border px-4 py-2">
+                                        {rental.due_date && !isNaN(new Date(rental.due_date))
+                                            ? new Date(rental.due_date).toLocaleDateString()
+                                            : 'Invalid Date'}
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             )}
