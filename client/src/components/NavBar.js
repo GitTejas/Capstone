@@ -15,34 +15,34 @@ function Navbar() {
         </li>
         <li>
           <Link
-            to="/members"
+            to="/movies"
             className="text-lime-500 font-bold uppercase transition-colors duration-300 ease-in-out hover:text-yellow-300 hover:scale-110 active:scale-100"
           >
-            Members
+            Movies
           </Link>
         </li>
         <li>
           <Link
-            to="/exercises"
+            to="/users"
             className="text-lime-500 font-bold uppercase transition-colors duration-300 ease-in-out hover:text-yellow-300 hover:scale-110 active:scale-100"
           >
-            Exercises
+            Users
           </Link>
         </li>
         <li>
           <Link
-            to="/workouts"
+            to="/rentals"
             className="text-lime-500 font-bold uppercase transition-colors duration-300 ease-in-out hover:text-yellow-300 hover:scale-110 active:scale-100"
           >
-            Workouts
+            Rentals
           </Link>
         </li>
         <li>
           <Link
-            to="/goals"
+            to="/ratings"
             className="text-lime-500 font-bold uppercase transition-colors duration-300 ease-in-out hover:text-yellow-300 hover:scale-110 active:scale-100"
           >
-            Goals
+            Reviews
           </Link>
         </li>
         <li>

@@ -6,208 +6,261 @@ from sqlalchemy import func
 from config import app, db, api
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
-from models import db, Member, Workout, Exercise, Goal
+from models import User, Movie, Rental, Rating
 
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
 
-# Member Resource
-class MemberResource(Resource):
+# User Resource
+class Users(Resource):
     def get(self):
-        members = Member.query.all()
-        return [member.to_dict() for member in members], 200
+        users = [user.to_dict() for user in User.query.all()]
+        return make_response(users, 200)
 
     def post(self):
-        data = request.json
-        member = Member(
-            name=data['name'],
-            email=data['email'],
-            age=data.get('age'),
-            weight=data.get('weight'),
-            height=data.get('height')
-        )
-        db.session.add(member)
-        db.session.commit()
-        return member.to_dict(), 201
-
-    def patch(self, member_id):
-        data = request.json
-        member = Member.query.get(member_id)
-        if member:
-            if 'name' in data:
-                member.name = data['name']
-            if 'email' in data:
-                member.email = data['email']
-            if 'age' in data:
-                member.age = data['age']
-            if 'weight' in data:
-                member.weight = data['weight']
-            if 'height' in data:
-                member.height = data['height']
+        json = request.get_json()
+        try:
+            new_user = User(
+                name = json['name'],
+                email = json['email']
+            )
+            db.session.add(new_user)
             db.session.commit()
-            return member.to_dict(), 200
-        return {'message': 'Member not found'}, 404
-
-    def delete(self, member_id):
-        member = Member.query.get(member_id)
-        if member:
-            db.session.delete(member)
-            db.session.commit()
-            return {'message': 'Member deleted'}, 200
-        return {'message': 'Member not found'}, 404
-
-# Member Resource
-class MemberById(Resource):
-    def get(self, id):
-        # Query for a single member
-        member = Member.query.filter(Member.id == id).first()
+            return make_response(new_user.to_dict(), 201)
         
-        # Check if the member exists
-        if member:
-            return make_response(member.to_dict(), 200)
+        except ValueError as e:
+            return {'errors': str(e)}, 400
+        
+        except Exception as e:
+            return {"errors": "Failed to add user to database", 'message': str(e)}, 500
+
+
+class UsersById(Resource):
+    def get(self, id):
+        users = User.query.filter(User.id == id).first()
+        return make_response(users.to_dict(), 200)
+
+    def patch(self, id):
+        json = request.get_json()
+        user = User.query.filter(User.id == id).first()
+        if user:
+            try:
+                setattr(user, "name", json['name'])
+                setattr(user, "email", json['email'])
+                db.session.add(user)
+                db.session.commit()
+                return make_response(user.to_dict(), 202)
+            except Exception as e:
+                return make_response({"errors": "Failed to update user", "message": str(e)}, 400)
         else:
-            return make_response({"error": "Member not found"}, 404)
+            return make_response({ "error": "User not found"}, 400)
 
+    def delete(self, id):
+        user = User.query.filter(User.id == id).first()
 
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return {}, 204
+        else:
+            return {'error': 'User not found'}, 404
 
-# Workout Resource
-class WorkoutResource(Resource):
+# Movie Resource
+class Movies(Resource):
     def get(self):
-        workouts = Workout.query.all()
-        return [workout.to_dict() for workout in workouts], 200
+        movies = [movie.to_dict() for movie in Movie.query.all()]
+        return make_response(movies, 200)
 
     def post(self):
-        data = request.json
-        workout = Workout(
-            name=data['name'],
-            description=data.get('description')
-        )
-        db.session.add(workout)
-        db.session.commit()
-        return workout.to_dict(), 201
-
-    def patch(self, workout_id):
-        data = request.json
-        workout = Workout.query.get(workout_id)
-        if workout:
-            if 'name' in data:
-                workout.name = data['name']
-            if 'description' in data:
-                workout.description = data['description']
+        json = request.get_json()
+        try:
+            new_movie = Movie(
+                title = json['title'],
+                genre = json['genre'],
+                release_year = json['release_year'],
+                image = json['image']
+            )
+            db.session.add(new_movie)
             db.session.commit()
-            return workout.to_dict(), 200
-        return {'message': 'Workout not found'}, 404
+            return make_response(new_movie.to_dict(), 201)
+        
+        except ValueError as e:
+            return {'errors': str(e)}, 400
+        
+        except Exception as e:
+            return {"errors": "Failed to add movie to database", 'message': str(e)}, 500
+    
+class MoviesById(Resource):
+    def get(self, id):
+        movies = Movie.query.filter(Movie.id == id).first()
+        return make_response(movies.to_dict(), 200)
+    
+    def patch(self, id):
+        json = request.get_json()
+        movie = Movie.query.filter(Movie.id == id).first()
+        if movie:
+            try:
+                setattr(movie, "title", json['title'])
+                setattr(movie, "genre", json['genre'])
+                setattr(movie, "release_year", json['release_year'])
+                setattr(movie, "image", json['image'])
+                db.session.add(movie)
+                db.session.commit()
+                return make_response(movie.to_dict(), 202)
+            except Exception as e:
+                return make_response({"errors": "Failed to update movie", "message": str(e)}, 400)
+        else:
+            return make_response({ "error": "Movie not found"}, 400)
 
-    def delete(self, workout_id):
-        workout = Workout.query.get(workout_id)
-        if workout:
-            db.session.delete(workout)
+
+    def delete(self, id):
+        movie = Movie.query.filter(Movie.id == id).first()
+
+        if movie:
+            db.session.delete(movie)
             db.session.commit()
-            return {'message': 'Workout deleted'}, 200
-        return {'message': 'Workout not found'}, 404
+            return {}, 204
+        else:
+            return {'error': 'Movie not found'}, 404
 
-
-# Exercise Resource
-class ExerciseResource(Resource):
+# Rental Resource
+class Rentals(Resource):
     def get(self):
-        exercises = Exercise.query.all()
-        return [exercise.to_dict() for exercise in exercises], 200
+        rentals = [rental.to_dict() for rental in Rental.query.all()]
+        return make_response(rentals, 200)
 
     def post(self):
-        data = request.json
-        exercise = Exercise(
-            name=data['name'],
-            sets=data.get('sets'),
-            reps=data.get('reps'),
-            weight=data.get('weight'),
-            duration=data.get('duration'),
-            workout_id=data['workout_id']
-        )
-        db.session.add(exercise)
-        db.session.commit()
-        return exercise.to_dict(), 201
-
-    def patch(self, exercise_id):
-        data = request.json
-        exercise = Exercise.query.get(exercise_id)
-        if exercise:
-            if 'name' in data:
-                exercise.name = data['name']
-            if 'sets' in data:
-                exercise.sets = data['sets']
-            if 'reps' in data:
-                exercise.reps = data['reps']
-            if 'weight' in data:
-                exercise.weight = data['weight']
-            if 'duration' in data:
-                exercise.duration = data['duration']
-            if 'workout_id' in data:
-                exercise.workout_id = data['workout_id']
+        json = request.get_json()
+        try:
+            movie = Movie.query.get(json['movie_id'])
+            user = User.query.get(json['user_id'])
+            
+            if not movie or not user:
+                return make_response({'error': 'Movie or User not found'}, 404)
+            # Create the new rental
+            new_rental = Rental(
+                due_date=json['due_date'],
+                movie=movie,  # Associate the movie object
+                user=user  # Associate the user object
+            )
+            db.session.add(new_rental)
             db.session.commit()
-            return exercise.to_dict(), 200
-        return {'message': 'Exercise not found'}, 404
+            return make_response(new_rental.to_dict(), 201)
+        except Exception as e:
+            return {"errors": "Failed to add rental", 'message': str(e)}, 500
 
-    def delete(self, exercise_id):
-        exercise = Exercise.query.get(exercise_id)
-        if exercise:
-            db.session.delete(exercise)
+    # def post(self):
+    #     data = request.json
+        
+    #     # Ensure that 'user_id', 'movie_id', and 'due_date' are in the request
+    #     if not all(key in data for key in ['user_id', 'movie_id', 'due_date']):
+    #         return {'message': 'Missing required fields'}, 400
+        
+    #     rental = Rental(
+    #         user_id=data['user_id'], 
+    #         movie_id=data['movie_id'], 
+    #         due_date=data['due_date']
+    #     )
+        
+    #     # Add the rental to the session and commit
+    #     db.session.add(rental)
+    #     db.session.commit()
+        
+    #     return rental.to_dict(), 201
+
+class RentalsById(Resource):
+    def get(self, id):
+        rentals = Rental.query.filter(Rental.id == id).first()
+        return make_response(rentals.to_dict(), 200)
+    
+    def patch(self, id):
+        json = request.get_json()
+        rental = Rental.query.filter_by(id=id).first()
+        
+        if rental:
+            movie = Movie.query.get(json['movie_id'])
+            user = User.query.get(json['user_id'])
+            
+            if movie:
+                rental.movie = movie
+            if user:
+                rental.user = user
+            
+            rental.due_date = json['due_date']
+
             db.session.commit()
-            return {'message': 'Exercise deleted'}, 200
-        return {'message': 'Exercise not found'}, 404
+            return make_response(rental.to_dict(), 202)
+        else:
+            return make_response({'error': 'Rental not found'}, 404)
+        
+    def delete(self, id):
+        rental = Rental.query.filter(Rental.id == id).first()
 
+        if rental:
+            db.session.delete(rental)
+            db.session.commit()
+            return {}, 204
+        else:
+            return {'error': 'Rental not found'}, 404
 
-# Goal Resource
-class GoalResource(Resource):
+# Rating Resource
+class Ratings(Resource):
+
     def get(self):
-        goals = Goal.query.all()
-        return [goal.to_dict() for goal in goals], 200
+        ratings = [rating.to_dict() for rating in Rating.query.all()]
+        return make_response(ratings, 200)
+    
+    # def post(self):
+    #     data = request.json
+    #     rating = Rating(
+    #         user_id=data['user_id'], 
+    #         movie_id=data['movie_id'], 
+    #         rating=data['rating'], 
+    #         review=data.get('review')
+    #     )
+    #     db.session.add(rating)
+    #     db.session.commit()
+    #     return rating.to_dict(), 201
 
     def post(self):
-        data = request.json
-        goal = Goal(
-            goal_type=data['goal_type'],
-            target_value=data['target_value'],
-            current_value=data.get('current_value'),
-            member_id=data['member_id']
-        )
-        db.session.add(goal)
-        db.session.commit()
-        return goal.to_dict(), 201
-
-    def patch(self, goal_id):
-        data = request.json
-        goal = Goal.query.get(goal_id)
-        if goal:
-            if 'goal_type' in data:
-                goal.goal_type = data['goal_type']
-            if 'target_value' in data:
-                goal.target_value = data['target_value']
-            if 'current_value' in data:
-                goal.current_value = data['current_value']
-            if 'member_id' in data:
-                goal.member_id = data['member_id']
+        json = request.get_json()
+        try:
+            movie = Movie.query.get(json['movie_id'])
+            user = User.query.get(json['user_id'])
+            
+            if not movie or not user:
+                return make_response({'error': 'Movie or User not found'}, 404)
+            # Create the new rental
+            new_rating = Rating(
+                rating=json['score'],
+                review=json['review'],
+                movie=movie,  # Associate the movie object
+                user=user  # Associate the user object
+            )
+            db.session.add(new_rating)
             db.session.commit()
-            return goal.to_dict(), 200
-        return {'message': 'Goal not found'}, 404
+            return make_response(new_rating.to_dict(), 201)
+        except Exception as e:
+            return {"errors": "Failed to add rating/review", 'message': str(e)}, 500
 
-    def delete(self, goal_id):
-        goal = Goal.query.get(goal_id)
-        if goal:
-            db.session.delete(goal)
-            db.session.commit()
-            return {'message': 'Goal deleted'}, 200
-        return {'message': 'Goal not found'}, 404
-
+class RatingsById(Resource):
+    def get(self, id):
+        ratings = Rating.query.filter(Rating.id == id).first()
+        return make_response(ratings.to_dict(), 200)
 
 # Register resources with routes
-api.add_resource(MemberResource, '/members')
-api.add_resource(MemberById, "/members/<int:id>")
+api.add_resource(Users, '/users')
+api.add_resource(UsersById, "/users/<int:id>")
 
-api.add_resource(WorkoutResource, '/workouts', '/workouts/<int:workout_id>')
-api.add_resource(ExerciseResource, '/exercises', '/exercises/<int:exercise_id>')
-api.add_resource(GoalResource, '/goals', '/goals/<int:goal_id>')
+api.add_resource(Movies, '/movies')
+api.add_resource(MoviesById, "/movies/<int:id>")
 
+api.add_resource(Rentals, '/rentals')
+api.add_resource(RentalsById, "/rentals/<int:id>")
+
+api.add_resource(Ratings, '/ratings')
+api.add_resource(RatingsById, '/ratings/<int:id>')
 
 
 

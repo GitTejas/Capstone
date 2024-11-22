@@ -6,11 +6,11 @@ from datetime import datetime, timedelta
 
 # Remote library imports
 from faker import Faker
-import random
+from random import random
 
 # Local imports
 from app import app
-from models import db, Member, Workout, Exercise, Goal
+from models import db, User, Movie, Rental, Rating
 
 if __name__ == '__main__':
     fake = Faker()
@@ -21,73 +21,90 @@ if __name__ == '__main__':
         db.drop_all()
         db.create_all()
 
-        # Seeding Members
-        print("Seeding Members...")
-        members = []
+        # Seeding Users
+        print("Seeding Users...")
+        users = []
         for _ in range(10):
-            member = Member(
+            user = User(
                 name=fake.name(),
-                email=fake.email(),
-                age=randint(18, 65),
-                weight=round(randint(45, 100) + randint(0, 99) / 100, 2),  # Random weight in kg
-                height=round(randint(150, 200) + randint(0, 99) / 100, 2)  # Random height in cm
+                email=fake.email()
             )
-            members.append(member)
-            db.session.add(member)
+            users.append(user)
+            db.session.add(user)
 
-        # Seeding Workouts
-        print("Seeding Workouts...")
-        workout_names = ["Running", "Strength Training", "Yoga", "HIIT", "Cycling", "Swimming", "Pilates"]
-        workouts = []
-        for name in workout_names:
-            workout = Workout(
-                name=name,
-                description=f"A great workout for {name.lower()} enthusiasts.",
+        # Seeding Movies
+        predefined_movies = [
+            {"title": "The Shawshank Redemption", "image": "https://upload.wikimedia.org/wikipedia/en/8/81/ShawshankRedemptionMoviePoster.jpg"},
+            {"title": "The Godfather", "image": "https://upload.wikimedia.org/wikipedia/en/1/1c/Godfather_ver1.jpg"},
+            {"title": "The Dark Knight", "image": "https://www.sideshow.com/cdn-cgi/image/quality=90,f=auto/https://www.sideshow.com/storage/product-images/500678F/batman-the-dark-knight_dc-comics_gallery_5c4e11bbb740a.jpg"},
+            {"title": "Pulp Fiction", "image": "https://i.ebayimg.com/00/s/MTYwMFgxMDcx/z/bLYAAOSwffNjoG1q/$_57.JPG?set_id=8800005007"},
+            {"title": "Forrest Gump", "image": "https://upload.wikimedia.org/wikipedia/en/6/67/Forrest_Gump_poster.jpg"},
+            {"title": "Inception", "image": "https://render.fineartamerica.com/images/rendered/medium/print/6/8/break/images/artworkimages/medium/3/inception-bo-kev.jpg"},
+            {"title": "Interstellar", "image": "https://upload.wikimedia.org/wikipedia/en/b/bc/Interstellar_film_poster.jpg"},
+            {"title": "Parasite", "image": "https://upload.wikimedia.org/wikipedia/en/5/53/Parasite_%282019_film%29.png"},
+            {"title": "Joker", "image": "https://upload.wikimedia.org/wikipedia/en/e/e1/Joker_%282019_film%29_poster.jpg"},
+            {"title": "Avengers: Endgame", "image": "https://upload.wikimedia.org/wikipedia/en/0/0d/Avengers_Endgame_poster.jpg"},
+        ]
+
+        print("Seeding Movies...")
+        movies = []
+        for movie_data in predefined_movies:
+            movie = Movie(
+                title=movie_data["title"],
+                genre=rc(["Drama", "Action", "Thriller", "Comedy", "Sci-Fi"]),
+                release_year=fake.date_between(start_date="-20y", end_date="today"),
+                image=movie_data["image"]
             )
-            workouts.append(workout)
-            db.session.add(workout)
+            movies.append(movie)
+            db.session.add(movie)
 
-        # Seeding Exercises
-        print("Seeding Exercises...")
-        exercise_names = ["Push-ups", "Squats", "Lunges", "Plank", "Jumping Jacks", "Burpees", "Deadlifts"]
-        exercises = []
-        for workout in workouts:
-            for exercise_name in exercise_names:
-                exercise = Exercise(
-                    name=exercise_name,  # Add exercise name here
-                    workout_id=workout.id,
-                    sets=randint(3, 5),
-                    reps=randint(10, 20),
-                    weight=round(randint(20, 100) + randint(0, 99) / 100, 2),  # Random weight for exercises
-                    duration=round(randint(10, 30) + randint(0, 59) / 60, 2)  # Duration in minutes
+        # Seeding Rentals
+        print("Seeding Rentals...")
+        if not users or not movies:
+            print("Error: Users or Movies list is empty.")
+        else:
+            # Debug: Check if there are any users and movies
+            print(f"Users: {[user.id for user in users]}")  # Make sure users list is populated
+            print(f"Movies: {[movie.id for movie in movies]}")  # Make sure movies list is populated
+
+            for _ in range(10):
+                # Query valid user and movie IDs from the database
+                user = db.session.query(User).order_by(db.func.random()).first()  # Randomly select a user
+                movie = db.session.query(Movie).order_by(db.func.random()).first()  # Randomly select a movie
+
+                if not user or not movie:
+                    print(f"Skipping rental: Invalid user_id or movie_id (user: {user}, movie: {movie})")
+                    continue  # Skip this rental if either user or movie is not found
+
+                # Generate a random due date
+                due_date = datetime.today() + timedelta(days=randint(7, 21))
+
+                # Create the rental record
+                rental = Rental(
+                    user_id=user.id,  # Use the valid user ID
+                    movie_id=movie.id,  # Use the valid movie ID
+                    due_date=due_date
                 )
-                exercises.append(exercise)
-                db.session.add(exercise)
+                db.session.add(rental)
+
+            # Commit the changes to the database
+            db.session.commit()
+            print("Seeding complete!")
 
 
-        # Seeding Goals
-        print("Seeding Goals...")
-        for member in members:
-            goal_type = rc(["Weight Loss", "Strength", "Endurance", "Flexibility"])
-            target_value = round(randint(50, 100) + randint(0, 99) / 100, 2)  # Target weight, strength level, etc.
-            current_value = round(randint(45, 99) + randint(0, 99) / 100, 2)  # Current value to track progress
 
-            goal = Goal(
-                goal_type=goal_type,
-                target_value=target_value,
-                current_value=current_value,
-                member_id=member.id
+
+
+        # Seeding Ratings
+        print("Seeding Ratings...")
+        for _ in range(20):
+            rating = Rating(
+                rating=randint(1, 5),
+                review=fake.sentence(nb_words=10),
+                user_id=rc([user.id for user in users]),  # Randomly select a user
+                movie_id=rc([movie.id for movie in movies])  # Randomly select a movie
             )
-            db.session.add(goal)
-
-        # Ensure members and workouts are populated before proceeding to adding workouts to members
-        print("Assigning Workouts to Members...")
-        for member in members:
-            # Randomly assign workouts to members
-            assigned_workouts = random.sample(workouts, randint(1, 3))  # Assign 1 to 3 random workouts
-            for workout in assigned_workouts:
-                member.workouts.append(workout)
-
+            db.session.add(rating)
 
         db.session.commit()
         print("Seeding complete!")

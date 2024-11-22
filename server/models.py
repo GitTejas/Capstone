@@ -7,100 +7,95 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
 
-# Member model (previously User)
-class Member(db.Model, SerializerMixin):
-    __tablename__ = 'members'
+class User(db.Model, SerializerMixin):
+    __tablename__ = "users"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    age = db.Column(db.Integer)
-    weight = db.Column(db.Float)
-    height = db.Column(db.Float)
 
-    # Many-to-many relationship with Workout (members can have many workouts)
-    workouts = db.relationship('Workout', secondary='member_workout', back_populates='members')
-    # One-to-many relationship with Goal (members can have many goals)
-    goals = db.relationship('Goal', back_populates='member')
+    # Add Relationships
+    rentals = db.relationship('Rental', back_populates='user')  # Corrected to singular 'user'
+    ratings = db.relationship('Rating', back_populates='user')  # Corrected to singular 'user'
 
-    serialize_rules = ('-workouts', '-goals')  # Exclude these relationships from serialization
+    serialize_rules = ('-rentals', '-ratings')  # Exclude these relationships from serialization
 
-    #Validations
+    ## Validations
 
     def __repr__(self):
-        return f'<Member {self.id}: {self.name}>'
+        return f'<User {self.id}: {self.name}>'
 
 
+class Movie(db.Model, SerializerMixin):
+    __tablename__ = "movies"
 
-
-# Workout model
-class Workout(db.Model, SerializerMixin):
-    __tablename__ = 'workouts'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(250))
+    title = db.Column(db.String(100), nullable=False)
+    genre = db.Column(db.String(50), nullable=False)
+    release_year = db.Column(db.Integer, nullable=False)  # Add this line for the release_year
+    image = db.Column(db.String)
 
-    # Many-to-many relationship with Member (workouts can belong to many members)
-    members = db.relationship('Member', secondary='member_workout', back_populates='workouts')
-    # One-to-many relationship with Exercise (workouts can have many exercises)
-    exercises = db.relationship('Exercise', back_populates='workout')
+    # Add Relationships
+    rentals = db.relationship('Rental', back_populates='movie')  # Link back to Rental
+    ratings = db.relationship('Rating', back_populates='movie')
 
-    serialize_rules = ('-members', '-exercises')  # Exclude these relationships from serialization
 
-    #Validations
+    serialize_rules = ('-rentals', '-ratings')  # Exclude these relationships from serialization
+
+
+    ## Validations
 
 
     def __repr__(self):
-        return f'<Workout {self.id}: {self.name}>'
+        return f'<Movie {self.id}: {self.title}>'
 
 
-# Member-Workout many-to-many association table
-class MemberWorkout(db.Model):
-    __tablename__ = 'member_workout'
-    member_id = db.Column(db.Integer, db.ForeignKey('members.id'), primary_key=True)
-    workout_id = db.Column(db.Integer, db.ForeignKey('workouts.id'), primary_key=True)
+class Rental(db.Model, SerializerMixin):
+    __tablename__ = "rentals"
 
-
-
-# Exercise model
-class Exercise(db.Model, SerializerMixin):
-    __tablename__ = 'exercises'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    sets = db.Column(db.Integer)
-    reps = db.Column(db.Integer)
-    weight = db.Column(db.Float)
-    duration = db.Column(db.Float)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
+    due_date = db.Column(db.DateTime, nullable=True)
 
-    workout_id = db.Column(db.Integer, db.ForeignKey('workouts.id'))
-    workout = db.relationship('Workout', back_populates='exercises')
+    # Add Relationships
+    movie = db.relationship('Movie', back_populates='rentals')  # Link back to Movie
+    user = db.relationship('User', back_populates='rentals')
 
-    serialize_rules = ('-workout',)  # Exclude the relationship from serialization
+    serialize_rules = ('-movie', '-user')  # Exclude the circular references
 
 
-    #Validations
+
+    ## Validations
+
 
 
     def __repr__(self):
-        return f'<Exercise {self.id}: {self.name}>'
+        return f'<Rental {self.id}>'
 
 
-# Goal model
-class Goal(db.Model, SerializerMixin):
-    __tablename__ = 'goals'
+class Rating(db.Model, SerializerMixin):
+    __tablename__ = "ratings"
+
     id = db.Column(db.Integer, primary_key=True)
-    goal_type = db.Column(db.String(50), nullable=False)  # e.g., 'weight', 'reps', 'duration'
-    target_value = db.Column(db.Float)
-    current_value = db.Column(db.Float)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    review = db.Column(db.Text, nullable=True)
 
-    member_id = db.Column(db.Integer, db.ForeignKey('members.id'))
-    member = db.relationship('Member', back_populates='goals')
+    created_at = db.Column(db.DateTime, default=func.now(), nullable=False)
 
-    serialize_rules = ('-member',)  # Exclude the relationship from serialization
+    # Add Relationships
+    movie = db.relationship('Movie', back_populates='ratings')  # Added to match 'movie'
+    user = db.relationship('User', back_populates='ratings')  # Added to match 'user'
 
 
 
-    #Validations
+
+
+    ## Validations
+
 
 
     def __repr__(self):
-        return f'<Goal {self.id}: {self.goal_type}>'
+        return f'<Rating {self.id}>'

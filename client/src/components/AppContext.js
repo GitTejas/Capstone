@@ -5,65 +5,71 @@ export const AppContext = createContext();
 
 // Context provider
 export const AppProvider = ({ children }) => {
-    // State for various data categories
-    const [members, setMembers] = useState([]);
-    const [workouts, setWorkouts] = useState([]);
-    const [exercises, setExercises] = useState([]);
-    const [goals, setGoals] = useState([]);
+    const [movies, setMovies] = useState([]);
+    const [rentals, setRentals] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [ratings, setRatings] = useState([]); // Add ratings state
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null); // Error state for better handling
 
     useEffect(() => {
-        // Fetch all initial workout-related data
+        // Fetch all initial data including ratings
         Promise.all([
-            fetch('/members').then((res) => res.json()),
-            fetch('/workouts').then((res) => res.json()),
-            fetch('/exercises').then((res) => res.json()),
-            fetch('/goals').then((res) => res.json())
+            fetch('/movies').then((res) => res.json()),
+            fetch('/rentals').then((res) => res.json()),
+            fetch('/users').then((res) => res.json()),
+            fetch('/ratings').then((res) => res.json()), // Add ratings API endpoint
         ])
-            .then(([membersData, workoutsData, exercisesData, goalsData]) => {
-                setMembers(membersData);
-                setWorkouts(workoutsData);
-                setExercises(exercisesData);
-                setGoals(goalsData);
+            .then(([moviesData, rentalsData, usersData, ratingsData]) => {
+                setMovies(moviesData);
+                setRentals(rentalsData);
+                setUsers(usersData);
+                setRatings(ratingsData); // Set the ratings data
                 setLoading(false);
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
-                setError('Failed to load data.'); // Set error message
                 setLoading(false);
             });
     }, []);
 
-    // Functions to add new items to the state
-    const addMember = (newMember) => {
-        setMembers((prevMembers) => [...prevMembers, newMember]);
+    // Function to add a new rental
+    const addRental = async (newRental) => {
+        try {
+            const response = await fetch('/rentals', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newRental),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to add rental');
+            }
+            const addedRental = await response.json();
+            setRentals((prevRentals) => [...prevRentals, addedRental]);
+        } catch (error) {
+            console.error('Error adding rental:', error);
+        }
     };
 
-    const addWorkout = (newWorkout) => {
-        setWorkouts((prevWorkouts) => [...prevWorkouts, newWorkout]);
-    };
-
-    const addExercise = (newExercise) => {
-        setExercises((prevExercises) => [...prevExercises, newExercise]);
-    };
-
-    const addGoal = (newGoal) => {
-        setGoals((prevGoals) => [...prevGoals, newGoal]);
+    // Function to add a new movie
+    const addMovie = (newMovie) => {
+        setMovies((prevMovies) => [...prevMovies, newMovie]);
     };
 
     return (
         <AppContext.Provider value={{
-            members,
-            workouts,
-            exercises,
-            goals,
+            movies,
+            rentals,
+            users,
+            ratings,
             loading,
-            error,  // Provide error state for UI feedback
-            addMember,
-            addWorkout,
-            addExercise,
-            addGoal
+            setMovies,
+            setRentals,
+            setUsers,
+            setRatings,
+            addMovie,
+            addRental, // Add the addRental method to the context
         }}>
             {children}
         </AppContext.Provider>
