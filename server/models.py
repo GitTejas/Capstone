@@ -14,13 +14,11 @@ class User(db.Model, SerializerMixin):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
 
-    # Add Relationships
-    rentals = db.relationship('Rental', back_populates='user')  # Corrected to singular 'user'
-    ratings = db.relationship('Rating', back_populates='user')  # Corrected to singular 'user'
+    rentals = db.relationship('Rental', back_populates='user') 
+    ratings = db.relationship('Rating', back_populates='user')  
 
-    serialize_rules = ('-rentals', '-ratings')  # Exclude these relationships from serialization
+    serialize_rules = ('-rentals', '-ratings')
 
-    ## Validations
     @validates("name")
     def validates_name(self, key, name):
         if isinstance(name, str) and 2 <= len(name) <= 100:
@@ -46,17 +44,15 @@ class Movie(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     genre = db.Column(db.String(50), nullable=False)
-    release_year = db.Column(db.Integer, nullable=False)  # Add this line for the release_year
+    release_year = db.Column(db.Integer, nullable=False)  
     image = db.Column(db.String)
 
-    # Add Relationships
-    rentals = db.relationship('Rental', back_populates='movie')  # Link back to Rental
+    rentals = db.relationship('Rental', back_populates='movie')  
     ratings = db.relationship('Rating', back_populates='movie')
 
 
-    serialize_rules = ('-rentals', '-ratings')  # Exclude these relationships from serialization
+    serialize_rules = ('-rentals', '-ratings')  
 
-    ## Validations
     @validates("title")
     def validates_title(self, key, title):
         if isinstance(title, str) and 1 < len(title) <= 100:
@@ -99,13 +95,11 @@ class Rental(db.Model, SerializerMixin):
     movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
     due_date = db.Column(db.DateTime, nullable=True)
 
-    # Add Relationships
-    movie = db.relationship('Movie', back_populates='rentals')  # Link back to Movie
+    movie = db.relationship('Movie', back_populates='rentals')  
     user = db.relationship('User', back_populates='rentals')
 
-    serialize_rules = ('-movie', '-user')  # Exclude the circular references
+    serialize_rules = ('-movie', '-user')  
 
-    ## Validations
     @validates("user_id")
     def validates_user_id(self, key, user_id):
         if isinstance(user_id, int) and user_id > 0:
@@ -123,7 +117,7 @@ class Rental(db.Model, SerializerMixin):
     @validates("due_date")
     def validates_due_date(self, key, due_date):
         if due_date is None:
-            return None  # Allow `due_date` to be optional
+            return None  
         if isinstance(due_date, (datetime, str)):
             if isinstance(due_date, str):
                 try:
@@ -153,11 +147,9 @@ class Rating(db.Model, SerializerMixin):
 
     created_at = db.Column(db.DateTime, default=func.now(), nullable=False)
 
-    # Add Relationships
-    movie = db.relationship('Movie', back_populates='ratings')  # Added to match 'movie'
-    user = db.relationship('User', back_populates='ratings')  # Added to match 'user'
+    movie = db.relationship('Movie', back_populates='ratings')  
+    user = db.relationship('User', back_populates='ratings') 
 
-    ## Validations
 
     @validates("user_id")
     def validates_user_id(self, key, user_id):
@@ -183,7 +175,7 @@ class Rating(db.Model, SerializerMixin):
     @validates("review")
     def validates_review(self, key, review):
         if review is None:
-            return None  # Allow review to be optional
+            return None  
         if isinstance(review, str) and 0 < len(review) <= 500:
             return review
         else:
