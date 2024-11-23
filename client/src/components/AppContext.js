@@ -75,11 +75,6 @@ export const AppProvider = ({ children }) => {
     // Function to edit a movie
     const editMovie = async (updatedMovie) => {
         try {
-            if (!updatedMovie.id) {
-                console.error("Movie ID is missing");
-                return;
-            }
-    
             const response = await fetch(`/movies/${updatedMovie.id}`, {
                 method: 'PATCH',
                 headers: {
@@ -89,13 +84,11 @@ export const AppProvider = ({ children }) => {
             });
     
             if (!response.ok) {
-                throw new Error(`Failed to update movie. Status code: ${response.status}`);
+                const errorDetails = await response.json();
+                throw new Error(`Failed to update movie: ${errorDetails.message || response.statusText}`);
             }
     
             const updatedMovieFromServer = await response.json();
-            console.log(updatedMovieFromServer);  // Check the response data
-    
-            // Update the state with the updated movie
             setMovies((prevMovies) =>
                 prevMovies.map((movie) =>
                     movie.id === updatedMovieFromServer.id ? updatedMovieFromServer : movie
@@ -104,8 +97,9 @@ export const AppProvider = ({ children }) => {
         } catch (error) {
             console.error('Error updating movie:', error);
         }
-    };    
+    };
     
+      
 
     // Function to delete a movie
     // Function to delete a movie

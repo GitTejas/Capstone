@@ -150,19 +150,19 @@ class Rating(db.Model, SerializerMixin):
     user = db.relationship('User', back_populates='ratings') 
 
 
-    # @validates("user_id")
-    # def validates_user_id(self, key, user_id):
-    #     if isinstance(user_id, int) and user_id > 0:
-    #         return user_id
-    #     else:
-    #         raise ValueError("User ID must be a positive integer.")
+    @validates("user_id")
+    def validates_user_id(self, key, user_id):
+        if isinstance(user_id, int) and user_id > 0:
+            return user_id
+        else:
+            raise ValueError("User ID must be a positive integer.")
 
-    # @validates("movie_id")
-    # def validates_movie_id(self, key, movie_id):
-    #     if isinstance(movie_id, int) and movie_id > 0:
-    #         return movie_id
-    #     else:
-    #         raise ValueError("Movie ID must be a positive integer.")
+    @validates("movie_id")
+    def validates_movie_id(self, key, movie_id):
+        if isinstance(movie_id, int) and movie_id > 0:
+            return movie_id
+        else:
+            raise ValueError("Movie ID must be a positive integer.")
 
     @validates("rating")
     def validates_rating(self, key, rating):

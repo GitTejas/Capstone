@@ -96,25 +96,49 @@ class MoviesById(Resource):
         movies = Movie.query.filter(Movie.id == id).first()
         return make_response(movies.to_dict(), 200)
 
+    # def patch(self, id):
+    #     json = request.get_json()  # Get the JSON data from the request
+    #     movie = Movie.query.filter(Movie.id == id).first()  # Find the movie by id
+
+    #     if movie:
+    #         try:
+    #             # Update movie fields
+    #             setattr(movie, "title", json['title'])
+    #             setattr(movie, "genre", json['genre'])
+    #             setattr(movie, "release_year", json['release_year'])
+    #             setattr(movie, "image", json['image'])
+
+    #             db.session.add(movie)  # Add to the session
+    #             db.session.commit()  # Commit the changes to the database
+    #             return make_response(movie.to_dict(), 202)  # Return the updated movie
+    #         except Exception as e:
+    #             return make_response({"errors": "Failed to update movie", "message": str(e)}, 400)
+    #     else:
+    #         return make_response({"error": "Movie not found"}, 400)
+
     def patch(self, id):
         json = request.get_json()  # Get the JSON data from the request
         movie = Movie.query.filter(Movie.id == id).first()  # Find the movie by id
 
         if movie:
+            # Validate input
+            if not json.get('title') or not json.get('genre') or not json.get('release_year') or not json.get('image'):
+                return make_response({"error": "All fields (title, genre, release_year, image) are required"}, 400)
+
             try:
                 # Update movie fields
-                setattr(movie, "title", json['title'])
-                setattr(movie, "genre", json['genre'])
-                setattr(movie, "release_year", json['release_year'])
-                setattr(movie, "image", json['image'])
+                movie.title = json['title']
+                movie.genre = json['genre']
+                movie.release_year = json['release_year']
+                movie.image = json['image']
 
-                db.session.add(movie)  # Add to the session
                 db.session.commit()  # Commit the changes to the database
                 return make_response(movie.to_dict(), 202)  # Return the updated movie
             except Exception as e:
                 return make_response({"errors": "Failed to update movie", "message": str(e)}, 400)
         else:
-            return make_response({"error": "Movie not found"}, 400)
+            return make_response({"error": "Movie not found"}, 404)
+        
 
 
 
