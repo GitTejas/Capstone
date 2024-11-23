@@ -52,11 +52,14 @@ if __name__ == '__main__':
             movie = Movie(
                 title=movie_data["title"],
                 genre=rc(["Drama", "Action", "Thriller", "Comedy", "Sci-Fi"]),
-                release_year=fake.date_between(start_date="-20y", end_date="today"),
+                release_year=fake.date_between(start_date="-20y", end_date="today").year,  # Extract the year
                 image=movie_data["image"]
             )
             movies.append(movie)
             db.session.add(movie)
+
+        db.session.commit()  # Don't forget to commit!
+
 
         # Seeding Rentals
         print("Seeding Rentals...")
