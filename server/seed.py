@@ -17,7 +17,6 @@ if __name__ == '__main__':
     with app.app_context():
         print("Starting seed...")
 
-        # Drop existing tables and create new ones
         db.drop_all()
         db.create_all()
 
@@ -52,13 +51,13 @@ if __name__ == '__main__':
             movie = Movie(
                 title=movie_data["title"],
                 genre=rc(["Drama", "Action", "Thriller", "Comedy", "Sci-Fi"]),
-                release_year=fake.date_between(start_date="-20y", end_date="today").year,  # Extract the year
+                release_year=fake.date_between(start_date="-20y", end_date="today").year,
                 image=movie_data["image"]
             )
             movies.append(movie)
             db.session.add(movie)
 
-        db.session.commit()  # Don't forget to commit!
+        db.session.commit()  
 
 
         # Seeding Rentals
@@ -66,36 +65,29 @@ if __name__ == '__main__':
         if not users or not movies:
             print("Error: Users or Movies list is empty.")
         else:
-            # Debug: Check if there are any users and movies
-            print(f"Users: {[user.id for user in users]}")  # Make sure users list is populated
-            print(f"Movies: {[movie.id for movie in movies]}")  # Make sure movies list is populated
+            print(f"Users: {[user.id for user in users]}")  
+            print(f"Movies: {[movie.id for movie in movies]}")  
 
             for _ in range(10):
-                # Query valid user and movie IDs from the database
-                user = db.session.query(User).order_by(db.func.random()).first()  # Randomly select a user
-                movie = db.session.query(Movie).order_by(db.func.random()).first()  # Randomly select a movie
+                
+                user = db.session.query(User).order_by(db.func.random()).first()  
+                movie = db.session.query(Movie).order_by(db.func.random()).first()  
 
                 if not user or not movie:
                     print(f"Skipping rental: Invalid user_id or movie_id (user: {user}, movie: {movie})")
-                    continue  # Skip this rental if either user or movie is not found
+                    continue  
 
-                # Generate a random due date
                 due_date = datetime.today() + timedelta(days=randint(7, 21))
 
-                # Create the rental record
                 rental = Rental(
-                    user_id=user.id,  # Use the valid user ID
-                    movie_id=movie.id,  # Use the valid movie ID
+                    user_id=user.id,  
+                    movie_id=movie.id,  
                     due_date=due_date
                 )
                 db.session.add(rental)
 
-            # Commit the changes to the database
             db.session.commit()
             print("Seeding complete!")
-
-
-
 
 
         # Seeding Ratings
@@ -104,8 +96,8 @@ if __name__ == '__main__':
             rating = Rating(
                 rating=randint(1, 5),
                 review=fake.sentence(nb_words=10),
-                user_id=rc([user.id for user in users]),  # Randomly select a user
-                movie_id=rc([movie.id for movie in movies])  # Randomly select a movie
+                user_id=rc([user.id for user in users]),  
+                movie_id=rc([movie.id for movie in movies]) 
             )
             db.session.add(rating)
 
