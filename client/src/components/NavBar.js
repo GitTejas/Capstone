@@ -21,20 +21,20 @@ function Navbar() {
             Movies
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link
             to="/users"
             className="text-lime-500 font-bold uppercase transition-colors duration-300 ease-in-out hover:text-yellow-300 hover:scale-110 active:scale-100"
           >
             Users
           </Link>
-        </li>
+        </li> */}
         <li>
           <Link
             to="/rentals"
             className="text-lime-500 font-bold uppercase transition-colors duration-300 ease-in-out hover:text-yellow-300 hover:scale-110 active:scale-100"
           >
-            Rentals
+            Rent
           </Link>
         </li>
         <li>
@@ -45,14 +45,14 @@ function Navbar() {
             Reviews
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link
             to="/newform"
             className="text-lime-500 font-bold uppercase transition-colors duration-300 ease-in-out hover:text-yellow-300 hover:scale-110 active:scale-100"
           >
             Form
           </Link>
-        </li>
+        </li> */}
       </ul>
     </nav>
   );

@@ -14,8 +14,8 @@ class User(db.Model, SerializerMixin):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
 
-    rentals = db.relationship('Rental', back_populates='user') 
-    ratings = db.relationship('Rating', back_populates='user')  
+    rentals = db.relationship('Rental', back_populates='user', cascade="all, delete-orphan")
+    ratings = db.relationship('Rating', back_populates='user', cascade="all, delete-orphan")
 
     serialize_rules = ('-rentals', '-ratings')
 
@@ -47,8 +47,8 @@ class Movie(db.Model, SerializerMixin):
     release_year = db.Column(db.Integer, nullable=False)  
     image = db.Column(db.String)
 
-    rentals = db.relationship('Rental', back_populates='movie')  
-    ratings = db.relationship('Rating', back_populates='movie')
+    rentals = db.relationship('Rental', back_populates='movie', cascade="all, delete-orphan")
+    ratings = db.relationship('Rating', back_populates='movie', cascade="all, delete-orphan")
 
 
     serialize_rules = ('-rentals', '-ratings')  
@@ -107,12 +107,11 @@ class Rental(db.Model, SerializerMixin):
         else:
             raise ValueError("User ID must be a positive integer.")
 
-    @validates("movie_id")
-    def validates_movie_id(self, key, movie_id):
-        if isinstance(movie_id, int) and movie_id > 0:
-            return movie_id
-        else:
-            raise ValueError("Movie ID must be a positive integer.")
+    @validates('movie_id')
+    def validate_movie_id(self, key, movie_id):
+        if movie_id is None:
+            raise ValueError("Movie ID cannot be None.")
+        return movie_id
 
     @validates("due_date")
     def validates_due_date(self, key, due_date):
@@ -151,19 +150,19 @@ class Rating(db.Model, SerializerMixin):
     user = db.relationship('User', back_populates='ratings') 
 
 
-    @validates("user_id")
-    def validates_user_id(self, key, user_id):
-        if isinstance(user_id, int) and user_id > 0:
-            return user_id
-        else:
-            raise ValueError("User ID must be a positive integer.")
+    # @validates("user_id")
+    # def validates_user_id(self, key, user_id):
+    #     if isinstance(user_id, int) and user_id > 0:
+    #         return user_id
+    #     else:
+    #         raise ValueError("User ID must be a positive integer.")
 
-    @validates("movie_id")
-    def validates_movie_id(self, key, movie_id):
-        if isinstance(movie_id, int) and movie_id > 0:
-            return movie_id
-        else:
-            raise ValueError("Movie ID must be a positive integer.")
+    # @validates("movie_id")
+    # def validates_movie_id(self, key, movie_id):
+    #     if isinstance(movie_id, int) and movie_id > 0:
+    #         return movie_id
+    #     else:
+    #         raise ValueError("Movie ID must be a positive integer.")
 
     @validates("rating")
     def validates_rating(self, key, rating):

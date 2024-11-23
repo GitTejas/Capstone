@@ -95,23 +95,27 @@ class MoviesById(Resource):
     def get(self, id):
         movies = Movie.query.filter(Movie.id == id).first()
         return make_response(movies.to_dict(), 200)
-    
+
     def patch(self, id):
-        json = request.get_json()
-        movie = Movie.query.filter(Movie.id == id).first()
+        json = request.get_json()  # Get the JSON data from the request
+        movie = Movie.query.filter(Movie.id == id).first()  # Find the movie by id
+
         if movie:
             try:
+                # Update movie fields
                 setattr(movie, "title", json['title'])
                 setattr(movie, "genre", json['genre'])
                 setattr(movie, "release_year", json['release_year'])
                 setattr(movie, "image", json['image'])
-                db.session.add(movie)
-                db.session.commit()
-                return make_response(movie.to_dict(), 202)
+
+                db.session.add(movie)  # Add to the session
+                db.session.commit()  # Commit the changes to the database
+                return make_response(movie.to_dict(), 202)  # Return the updated movie
             except Exception as e:
                 return make_response({"errors": "Failed to update movie", "message": str(e)}, 400)
         else:
-            return make_response({ "error": "Movie not found"}, 400)
+            return make_response({"error": "Movie not found"}, 400)
+
 
 
     def delete(self, id):
@@ -210,18 +214,6 @@ class Ratings(Resource):
     def get(self):
         ratings = [rating.to_dict() for rating in Rating.query.all()]
         return make_response(ratings, 200)
-    
-    # def post(self):
-    #     data = request.json
-    #     rating = Rating(
-    #         user_id=data['user_id'], 
-    #         movie_id=data['movie_id'], 
-    #         rating=data['rating'], 
-    #         review=data.get('review')
-    #     )
-    #     db.session.add(rating)
-    #     db.session.commit()
-    #     return rating.to_dict(), 201
 
     def post(self):
         json = request.get_json()
@@ -243,6 +235,18 @@ class Ratings(Resource):
             return make_response(new_rating.to_dict(), 201)
         except Exception as e:
             return {"errors": "Failed to add rating/review", 'message': str(e)}, 500
+
+    # def post(self):
+    #     data = request.json
+    #     rating = Rating(
+    #         user_id=data['user_id'], 
+    #         movie_id=data['movie_id'], 
+    #         rating=data['rating'], 
+    #         review=data.get('review')
+    #     )
+    #     db.session.add(rating)
+    #     db.session.commit()
+    #     return rating.to_dict(), 201
 
 class RatingsById(Resource):
     def get(self, id):
