@@ -13,7 +13,8 @@ function App() {
     <AppProvider>
       <Router>
         <Navbar />
-        <div className="container mx-auto px-4 py-4">
+        {/* Updated container: use full width and center */}
+        <div className="min-h-screen w-full px-4 py-4">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/movies" element={<MovieList />} />

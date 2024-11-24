@@ -157,25 +157,6 @@ class Rentals(Resource):
         except Exception as e:
             return {"errors": "Failed to add rental", 'message': str(e)}, 500
 
-    # def post(self):
-    #     data = request.json
-        
-    #     # Ensure that 'user_id', 'movie_id', and 'due_date' are in the request
-    #     if not all(key in data for key in ['user_id', 'movie_id', 'due_date']):
-    #         return {'message': 'Missing required fields'}, 400
-        
-    #     rental = Rental(
-    #         user_id=data['user_id'], 
-    #         movie_id=data['movie_id'], 
-    #         due_date=data['due_date']
-    #     )
-        
-    #     # Add the rental to the session and commit
-    #     db.session.add(rental)
-    #     db.session.commit()
-        
-    #     return rental.to_dict(), 201
-
 class RentalsById(Resource):
     def get(self, id):
         rentals = Rental.query.filter(Rental.id == id).first()

@@ -33,7 +33,6 @@ export const AppProvider = ({ children }) => {
     }, []);
 
     // Function to add a new rental
-// AppContext.js (or wherever your context is defined)
     const addRental = async (rentalData) => {
         try {
             const response = await fetch('/rentals', {
