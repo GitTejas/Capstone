@@ -170,7 +170,7 @@ function RentalList() {
                     className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-400 transition-all duration-150"
                 >
                     <option value="">Select an option</option>
-                    <option value="user">User Name (A-Z)</option>
+                    {/* <option value="user">User Name (A-Z)</option> */}
                     <option value="movie">Movie Title (A-Z)</option>
                     <option value="due_date">Due Date (Earliest to Latest)</option>
                 </select>
