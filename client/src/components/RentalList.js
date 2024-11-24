@@ -43,6 +43,12 @@ function RentalList() {
             movie_id: rental.movie_id,
             due_date: rental.due_date,
         });
+
+        // Scroll to the top of the page or the form
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
     };
 
     const handleDelete = (rentalId) => {
@@ -69,8 +75,8 @@ function RentalList() {
     }
 
     return (
-        <div className="min-h-screen bg-blue-200">
-            <h2 className="text-2xl font-semibold mb-4">Rental List</h2>
+        <div className="min-h-screen bg-white text-gray-900">
+        <h2 className="text-2xl font-semibold mb-4">Rental List</h2>
 
             {/* Rental Form */}
             <form

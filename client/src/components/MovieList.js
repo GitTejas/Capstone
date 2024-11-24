@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from './AppContext';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -18,11 +18,31 @@ const validationSchema = Yup.object({
 function MovieList() {
   const { movies, loading, addMovie, setMovies, editMovie, deleteMovie } = useContext(AppContext);
   const [editMovieData, setEditMovieData] = useState(null);
+  const [sortOption, setSortOption] = useState('title');
 
   const handleEdit = (movie) => {
     setEditMovieData(movie);
     window.scrollTo(0, 0);
   };
+
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
+  };
+
+  const sortMovies = (movies, sortOption) => {
+    switch (sortOption) {
+      case 'title':
+        return [...movies].sort((a, b) => a.title.localeCompare(b.title));
+      case 'genre':
+        return [...movies].sort((a, b) => a.genre.localeCompare(b.genre));
+      case 'release_year':
+        return [...movies].sort((a, b) => a.release_year - b.release_year);
+      default:
+        return movies;
+    }
+  };
+
+  const sortedMovies = sortMovies(movies, sortOption);
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading movies...</p>;
@@ -95,7 +115,22 @@ function MovieList() {
 
       <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Movie List</h2>
 
-      {movies.length === 0 ? (
+      {/* Sort Dropdown */}
+      <div className="mb-4 text-center">
+        <label htmlFor="sortBy" className="mr-2 text-gray-700">Sort By:</label>
+        <select
+          id="sortBy"
+          value={sortOption}
+          onChange={handleSortChange}
+          className="border border-gray-300 p-2 rounded-md"
+        >
+          <option value="title">Title (A-Z)</option>
+          <option value="genre">Genre (A-Z)</option>
+          <option value="release_year">Release Year (Earliest to Latest)</option>
+        </select>
+      </div>
+
+      {sortedMovies.length === 0 ? (
         <p className="text-center text-gray-600 text-lg">No movies found.</p>
       ) : (
         <table className="w-full border-collapse bg-white shadow-lg rounded-md overflow-hidden">
@@ -108,7 +143,7 @@ function MovieList() {
             </tr>
           </thead>
           <tbody>
-            {movies.map((movie, index) => (
+            {sortedMovies.map((movie, index) => (
               <tr key={movie.id} className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-200 transition duration-200`}>
                 <td className="p-4 flex items-center">
                   <img src={movie.image} alt={movie.title} className="w-16 h-16 object-cover rounded-md mr-4" />
