@@ -140,8 +140,8 @@ class Rentals(Resource):
     def post(self):
         json = request.get_json()
         try:
-            movie = Movie.query.get(json['movie_id'])
-            user = User.query.get(json['user_id'])
+            movie = db.session.get(Movie, json['movie_id'])
+            user = db.session.get(User, json['user_id'])
             
             if not movie or not user:
                 return make_response({'error': 'Movie or User not found'}, 404)
@@ -186,8 +186,8 @@ class RentalsById(Resource):
         rental = Rental.query.filter_by(id=id).first()
         
         if rental:
-            movie = Movie.query.get(json['movie_id'])
-            user = User.query.get(json['user_id'])
+            movie = db.session.get(Movie, json['movie_id'])
+            user = db.session.get(User, json['user_id'])
             
             if movie:
                 rental.movie = movie
