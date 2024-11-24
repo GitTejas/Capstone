@@ -111,6 +111,7 @@ function RentalList() {
             >
                 <h3 className="text-lg font-medium">{editMode ? 'Edit Rental' : 'Add Rental'}</h3>
 
+
                 {/* User Select */}
                 <div>
                     <label htmlFor="user_id" className="block text-sm font-medium text-gray-700">User</label>
@@ -120,6 +121,7 @@ function RentalList() {
                         onChange={formik.handleChange}
                         value={formik.values.user_id}
                         className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
+                        disabled={editMode} // Disable the dropdown when editing
                     >
                         <option value="">Select a user</option>
                         {users.map((user) => (
