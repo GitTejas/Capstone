@@ -193,7 +193,7 @@ function RentalList() {
                     <option value="movie">Movie Title (A-Z)</option>
                     <option value="due_date">Due Date (Earliest to Latest)</option>
                 </select>
-            </div>
+            </div> 
 
             {/* Rentals by User */}
             {sortedRentalsByUser.length === 0 ? (

@@ -3,9 +3,10 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import validates
 from sqlalchemy import func
 from config import db
-from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import re
+
+# from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"

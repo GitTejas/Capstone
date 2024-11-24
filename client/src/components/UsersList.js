@@ -47,8 +47,6 @@ function UsersList() {
         </p>
       </div>
 
-
-
       {/* Form for adding a new user */}
       <form onSubmit={formik.handleSubmit} className="mb-8 space-y-6 bg-gradient-to-r from-blue-500 to-teal-400 p-6 rounded-xl shadow-xl">
         <h3 className="text-2xl font-bold text-white mb-4">Add New User</h3>
