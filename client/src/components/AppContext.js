@@ -106,35 +106,23 @@ export const AppProvider = ({ children }) => {
       
 
     // Function to delete a movie
-    // Function to delete a movie
     const deleteMovie = async (movieId) => {
         try {
-            // Ensure movieId is valid before making the request
-            if (!movieId) {
-                throw new Error('Movie ID is required for deletion');
+            const response = await fetch(`/movies/${movieId}`, { method: 'DELETE' });
+    
+            if (response.ok) {
+                setMovies((prevMovies) => prevMovies.filter((movie) => movie.id !== movieId));
+    
+                // Remove rentals associated with this movie
+                setRentals((prevRentals) => prevRentals.filter((rental) => rental.movie_id !== movieId));
+            } else {
+                console.error('Error deleting movie:', await response.json());
             }
-
-            // Optimistic UI update: Remove the movie locally first
-            setMovies((prevMovies) => prevMovies.filter((movie) => movie.id !== movieId));
-
-            const response = await fetch(`/movies/${movieId}`, {
-                method: 'DELETE',
-            });
-
-            if (!response.ok) {
-                // If the deletion fails, restore the movie to the state
-                setMovies((prevMovies) => [...prevMovies, { id: movieId }]);
-                throw new Error(`Failed to delete movie. Status code: ${response.status}`);
-            }
-
-            // Optionally: Remove from related state like rentals, if applicable
-            setRentals((prevRentals) => prevRentals.filter((rental) => rental.movieId !== movieId));
-
         } catch (error) {
             console.error('Error deleting movie:', error);
         }
     };
-
+    
         // Update rental (PATCH)
         const updateRental = async (updatedRental) => {
             try {

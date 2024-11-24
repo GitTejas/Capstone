@@ -42,7 +42,7 @@ function Navbar() {
             to="/users"
             className="text-white font-semibold uppercase tracking-wide transition-transform duration-300 ease-in-out hover:text-yellow-300 hover:scale-110 active:scale-95"
           >
-            Users
+            Sign Up
           </Link>
         </li>
       </ul>

@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { AppContext } from './AppContext';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { Link } from 'react-router-dom';
+
 
 function UsersList() {
   const { users, rentals, loading, movies, addUser } = useContext(AppContext);
@@ -55,6 +57,22 @@ function UsersList() {
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">User List</h2>
+
+      {/* Introductory paragraph */}
+      <div className="bg-gradient-to-l from-purple-400 via-pink-500 to-red-500 text-white p-6 rounded-lg shadow-md mb-6">
+        <p className="text-lg font-medium">
+          Welcome! To{' '}
+          <Link 
+            to="/rentals" 
+            className="no-underline font-semibold text-blue-200 hover:text-blue-400"
+          >
+            rent
+          </Link>{' '}
+          your favorite movies, please sign up as a user. Just enter your name and email below, and we’ll store your contact information for a seamless experience.
+        </p>
+      </div>
+
+
 
       {/* Form for adding a new user */}
       <form onSubmit={formik.handleSubmit} className="mb-8 space-y-6 bg-gradient-to-r from-blue-500 to-teal-400 p-6 rounded-xl shadow-xl">
