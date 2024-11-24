@@ -37,6 +37,14 @@ function Navbar() {
             Reviews
           </Link>
         </li>
+        <li>
+          <Link
+            to="/users"
+            className="text-white font-semibold uppercase tracking-wide transition-transform duration-300 ease-in-out hover:text-yellow-300 hover:scale-110 active:scale-95"
+          >
+            Users
+          </Link>
+        </li>
       </ul>
       <div className="text-white font-semibold text-xl tracking-wide">
         <span>🎬 Movie App</span>
