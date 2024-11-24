@@ -191,7 +191,27 @@ export const AppProvider = ({ children }) => {
             }
         };
 
-    
+            
+        // Function to add a new user
+        const addUser = async (newUser) => {
+            try {
+                const response = await fetch('/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newUser),
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to add user');
+                }
+                const addedUser = await response.json();
+                setUsers((prevUsers) => [...prevUsers, addedUser]);
+            } catch (error) {
+                console.error('Error adding user:', error);
+            }
+        };
+
 
     return (
         <AppContext.Provider value={{
@@ -210,6 +230,7 @@ export const AppProvider = ({ children }) => {
             deleteMovie, // Add the deleteMovie method to the context
             updateRental,
             deleteRental,
+            addUser,
         }}>
             {children}
         </AppContext.Provider>
