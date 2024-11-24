@@ -23,31 +23,6 @@ function UsersList() {
       formik.resetForm(); // Reset the form after submission
     },
   });
-
-  // // Get movies rented by each user
-  // const getRentedMovies = (userId) => {
-  //   // Filter rentals for the current user
-  //   const userRentals = rentals.filter(rental => rental.userId === userId);
-    
-  //   // Log rentals for debugging
-  //   console.log("User Rentals for userId", userId, ":", userRentals);
-    
-  //   if (userRentals.length === 0) {
-  //     return 'No movies rented yet';
-  //   }
-    
-  //   // Map over rentals and find the corresponding movie for each rental
-  //   const rentedMovies = userRentals.map(rental => {
-  //     const rentedMovie = movies.find(movie => movie.id === rental.movieId);
-      
-  //     // Log each movie lookup for debugging
-  //     console.log("Checking rental movieId:", rental.movieId, "Found Movie:", rentedMovie);
-      
-  //     return rentedMovie ? rentedMovie.title : 'Unknown Movie';
-  //   });
-    
-  //   return rentedMovies.join(', ');
-  // };
   
 
   if (loading) {
@@ -64,7 +39,7 @@ function UsersList() {
           Welcome! To{' '}
           <Link 
             to="/rentals" 
-            className="no-underline font-semibold text-blue-200 hover:text-blue-400"
+            className="underline font-semibold text-blue-200 hover:text-blue-400"
           >
             rent
           </Link>{' '}
