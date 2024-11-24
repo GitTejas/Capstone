@@ -96,25 +96,6 @@ class MoviesById(Resource):
         movies = Movie.query.filter(Movie.id == id).first()
         return make_response(movies.to_dict(), 200)
 
-    # def patch(self, id):
-    #     json = request.get_json()  # Get the JSON data from the request
-    #     movie = Movie.query.filter(Movie.id == id).first()  # Find the movie by id
-
-    #     if movie:
-    #         try:
-    #             # Update movie fields
-    #             setattr(movie, "title", json['title'])
-    #             setattr(movie, "genre", json['genre'])
-    #             setattr(movie, "release_year", json['release_year'])
-    #             setattr(movie, "image", json['image'])
-
-    #             db.session.add(movie)  # Add to the session
-    #             db.session.commit()  # Commit the changes to the database
-    #             return make_response(movie.to_dict(), 202)  # Return the updated movie
-    #         except Exception as e:
-    #             return make_response({"errors": "Failed to update movie", "message": str(e)}, 400)
-    #     else:
-    #         return make_response({"error": "Movie not found"}, 400)
 
     def patch(self, id):
         json = request.get_json()  # Get the JSON data from the request
@@ -138,8 +119,6 @@ class MoviesById(Resource):
                 return make_response({"errors": "Failed to update movie", "message": str(e)}, 400)
         else:
             return make_response({"error": "Movie not found"}, 404)
-        
-
 
 
     def delete(self, id):

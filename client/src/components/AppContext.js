@@ -33,20 +33,24 @@ export const AppProvider = ({ children }) => {
     }, []);
 
     // Function to add a new rental
-    const addRental = async (newRental) => {
+// AppContext.js (or wherever your context is defined)
+    const addRental = async (rentalData) => {
         try {
             const response = await fetch('/rentals', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newRental),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(rentalData),
             });
-            if (!response.ok) {
-                throw new Error('Failed to add rental');
+
+            if (response.ok) {
+                const newRental = await response.json();
+
+                // Add the new rental to the state
+                setRentals((prevRentals) => [...prevRentals, newRental]);
+            } else {
+                const errorData = await response.json();
+                console.error('Error adding rental:', errorData);
             }
-            const addedRental = await response.json();
-            setRentals((prevRentals) => [...prevRentals, addedRental]);
         } catch (error) {
             console.error('Error adding rental:', error);
         }
@@ -131,7 +135,62 @@ export const AppProvider = ({ children }) => {
         }
     };
 
-    
+        // Update rental (PATCH)
+        const updateRental = async (updatedRental) => {
+            try {
+                const response = await fetch(`/rentals/${updatedRental.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedRental),
+                });
+
+                if (!response.ok) {
+                    const errorDetails = await response.json();
+                    throw new Error(`Failed to update rental: ${errorDetails.message || response.statusText}`);
+                }
+
+                // Update rental in state
+                const updatedRentalFromServer = await response.json();
+                setRentals((prevRentals) =>
+                    prevRentals.map((rental) =>
+                        rental.id === updatedRentalFromServer.id ? updatedRentalFromServer : rental
+                    )
+                );
+            } catch (error) {
+                console.error('Error updating rental:', error);
+            }
+        };
+
+        // Delete rental (DELETE)
+        const deleteRental = async (rentalId) => {
+            try {
+                // Ensure rentalId is valid before making the request
+                if (!rentalId) {
+                    throw new Error('Rental ID is required for deletion');
+                }
+
+                // Optimistic UI update: Remove the rental locally first
+                setRentals((prevRentals) => prevRentals.filter((rental) => rental.id !== rentalId));
+
+                const response = await fetch(`/rentals/${rentalId}`, {
+                    method: 'DELETE',
+                });
+
+                if (!response.ok) {
+                    // If deletion fails, restore the rental to the state
+                    setRentals((prevRentals) => [...prevRentals, { id: rentalId }]);
+                    throw new Error(`Failed to delete rental. Status code: ${response.status}`);
+                }
+
+                // Optionally: Remove from related state if applicable (e.g., if rentals are linked to users or movies)
+                // You can remove the rental from other states (like users or movies) if needed.
+            } catch (error) {
+                console.error('Error deleting rental:', error);
+            }
+        };
+
     
 
     return (
@@ -149,6 +208,8 @@ export const AppProvider = ({ children }) => {
             addRental,
             editMovie, // Add the editMovie method to the context
             deleteMovie, // Add the deleteMovie method to the context
+            updateRental,
+            deleteRental,
         }}>
             {children}
         </AppContext.Provider>

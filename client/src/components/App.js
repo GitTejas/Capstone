@@ -6,7 +6,6 @@ import MovieList from './MovieList';
 import RentalList from './RentalList';
 import RatingsList from './RatingList'; 
 import Home from './Home';
-import NewForm from './NewForm';
 import UsersList from './UsersList';
 
 function App() {
@@ -19,9 +18,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/movies" element={<MovieList />} />
             <Route path="/rentals" element={<RentalList />} />
-            {/* <Route path="/users" element={<UsersList />} /> */}
+            <Route path="/users" element={<UsersList />} />
             <Route path="/ratings" element={<RatingsList />} />
-            {/* <Route path="/newform" element={<NewForm />} /> */}
           </Routes>
         </div>
       </Router>
