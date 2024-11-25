@@ -202,8 +202,8 @@ class Ratings(Resource):
     def post(self):
         json = request.get_json()
         try:
-            movie = Movie.query.get(json['movie_id'])
-            user = User.query.get(json['user_id'])
+            movie = db.session.get(Movie, json['movie_id'])
+            user = db.session.get(User, json['user_id'])
             
             if not movie or not user:
                 return make_response({'error': 'Movie or User not found'}, 404)
@@ -219,18 +219,6 @@ class Ratings(Resource):
             return make_response(new_rating.to_dict(), 201)
         except Exception as e:
             return {"errors": "Failed to add rating/review", 'message': str(e)}, 500
-
-    # def post(self):
-    #     data = request.json
-    #     rating = Rating(
-    #         user_id=data['user_id'], 
-    #         movie_id=data['movie_id'], 
-    #         rating=data['rating'], 
-    #         review=data.get('review')
-    #     )
-    #     db.session.add(rating)
-    #     db.session.commit()
-    #     return rating.to_dict(), 201
 
 class RatingsById(Resource):
     def get(self, id):

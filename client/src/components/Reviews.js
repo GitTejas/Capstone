@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-const RatingsList = () => {
+const Reviews = () => {
   const { ratings, loading, movies, users, setRatings, addRating } = useContext(AppContext);
   const [showForm, setShowForm] = useState(false);
 
@@ -187,4 +187,4 @@ const RatingsList = () => {
   );
 };
 
-export default RatingsList;
+export default Reviews;

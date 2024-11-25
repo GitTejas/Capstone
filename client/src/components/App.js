@@ -2,11 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './AppContext';
 import Navbar from './NavBar';
-import MovieList from './MovieList';
-import RentalList from './RentalList';
-import RatingsList from './RatingList'; 
+import Movies from './Movies';
+import Rentals from './Rentals';
+import Reviews from './Reviews';
 import Home from './Home';
-import UsersList from './UsersList';
+import Users from './Users';
 
 function App() {
   return (
@@ -17,10 +17,10 @@ function App() {
         <div className="min-h-screen w-full px-4 py-4">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/movies" element={<MovieList />} />
-            <Route path="/rentals" element={<RentalList />} />
-            <Route path="/users" element={<UsersList />} />
-            <Route path="/ratings" element={<RatingsList />} />
+            <Route path="/movies" element={<Movies/>} />
+            <Route path="/rentals" element={<Rentals />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/ratings" element={<Reviews />} />
           </Routes>
         </div>
       </Router>

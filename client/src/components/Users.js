@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 
 
-function UsersList() {
+function Users() {
   const { users, rentals, loading, movies, addUser } = useContext(AppContext);
 
   // Formik setup for adding a new user
@@ -114,4 +114,4 @@ function UsersList() {
   );
 }
 
-export default UsersList;
+export default Users;

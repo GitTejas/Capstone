@@ -15,7 +15,7 @@ const validationSchema = Yup.object({
     .required('Image URL is required'),
 });
 
-function MovieList() {
+function Movies() {
   const { movies, loading, addMovie, setMovies, editMovie, deleteMovie } = useContext(AppContext);
   const [editMovieData, setEditMovieData] = useState(null);
   const [sortOption, setSortOption] = useState('title');
@@ -168,4 +168,4 @@ function MovieList() {
   );
 }
 
-export default MovieList;
+export default Movies;

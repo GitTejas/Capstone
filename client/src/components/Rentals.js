@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 
 
-function RentalList() {
+function Rentals() {
     const { rentals, loading, users, movies, addRental, updateRental, deleteRental } = useContext(AppContext);
 
     const [sortOption, setSortOption] = useState('');
@@ -251,4 +251,4 @@ function RentalList() {
     );
 }
 
-export default RentalList;
+export default Rentals;
