@@ -229,8 +229,9 @@ export const AppProvider = ({ children }) => {
             } catch (error) {
               console.error("Error adding rating:", error);
             }
-          };
-          
+          };          
+
+        
     return (
         <AppContext.Provider value={{
             movies,

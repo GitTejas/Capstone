@@ -8,6 +8,7 @@ const RatingsList = () => {
   const { ratings, loading, movies, users, setRatings, addRating } = useContext(AppContext);
   const [showForm, setShowForm] = useState(false);
 
+
   const validationSchema = Yup.object().shape({
     movieId: Yup.string()
       .required("You must select a movie"), // Enforces movie selection
@@ -34,18 +35,16 @@ const RatingsList = () => {
     validationSchema,
     onSubmit: (values) => {
       const newRating = {
-        movieId: parseInt(values.movieId), // Convert to number if needed
-        userId: parseInt(values.userId), // Convert to number if needed
+        movieId: parseInt(values.movieId), 
+        userId: parseInt(values.userId), 
         rating: parseInt(values.rating),
         review: values.review,
       };
   
-      // Call addRating to send the new rating to the backend and update the context
       addRating(newRating);
   
-      // Reset form after submission
       formik.resetForm();
-      setShowForm(false); // Optionally hide form after submission
+      setShowForm(false); 
     },
   });
   
@@ -70,13 +69,11 @@ const RatingsList = () => {
         {showForm ? "Cancel" : "Add a New Review"}
       </button>
 
-      {/* Form for Adding a New Rating */}
+      {/* Add/Edit Rating Form */}
       {showForm && (
         <form onSubmit={formik.handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="movieId" className="block text-sm font-medium text-gray-700">
-              Movie
-            </label>
+            <label htmlFor="movieId" className="block text-sm font-medium text-gray-700">Movie</label>
             <select
               id="movieId"
               name="movieId"
@@ -97,9 +94,7 @@ const RatingsList = () => {
           </div>
 
           <div>
-            <label htmlFor="userId" className="block text-sm font-medium text-gray-700">
-              User
-            </label>
+            <label htmlFor="userId" className="block text-sm font-medium text-gray-700">User</label>
             <select
               id="userId"
               name="userId"
@@ -120,9 +115,7 @@ const RatingsList = () => {
           </div>
 
           <div>
-            <label htmlFor="rating" className="block text-sm font-medium text-gray-700">
-              Rating (1-5)
-            </label>
+            <label htmlFor="rating" className="block text-sm font-medium text-gray-700">Rating (1-5)</label>
             <input
               id="rating"
               name="rating"
@@ -139,9 +132,7 @@ const RatingsList = () => {
           </div>
 
           <div>
-            <label htmlFor="review" className="block text-sm font-medium text-gray-700">
-              Review
-            </label>
+            <label htmlFor="review" className="block text-sm font-medium text-gray-700">Review</label>
             <textarea
               id="review"
               name="review"
@@ -160,30 +151,35 @@ const RatingsList = () => {
               type="submit"
               className="bg-blue-500 text-white py-2 px-4 rounded"
             >
-              Submit Review
+              {"Submit Review"}
             </button>
           </div>
         </form>
       )}
 
       {/* Display Existing Ratings */}
-      <ul className="space-y-4 mt-8">
+      <ul className="space-y-6 mt-8">
         {ratings.map((rating) => (
-          <li
-            key={rating.id}
-            className="p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-          >
-            <Link
-              to={`/ratings/${rating.id}`}
-              className="text-blue-500 hover:text-blue-700"
-            >
-              <div className="mb-2">
-                <p className="text-lg font-semibold text-gray-800">Movie: {rating.movie.title}</p>
-                <p className="text-sm text-gray-600">Rated by: {rating.user.name}</p>
+          <li key={rating.id} className="p-6 bg-gradient-to-r from-blue-100 via-blue-200 to-indigo-300 border-2 border-transparent rounded-lg shadow-lg hover:scale-105 transform transition-all duration-300 ease-in-out">
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex-1">
+                <p className="text-xl font-semibold text-gray-900 mb-1">{rating.movie.title}</p>
+                <p className="text-sm text-gray-700 italic">Rated by: {rating.user.name}</p>
               </div>
-              <p className="font-medium text-gray-800">Review: {rating.review}</p>
-              <p className="text-sm text-gray-600">Rating: {rating.rating}</p>
-            </Link>
+
+              <div className="flex items-center space-x-1">
+                <span className="text-lg font-semibold text-yellow-400">
+                  {"★".repeat(rating.rating)}
+                </span>
+                <p className="text-sm text-gray-600">({rating.rating}/5)</p>
+              </div>
+            </div>
+
+            <p className="text-lg font-medium text-gray-800 mb-2">{rating.review}</p>
+
+            <div className="text-sm text-gray-500 flex justify-between items-center">
+              <p>Rating Date: {new Date(rating.created_at).toLocaleDateString()}</p>
+            </div>
           </li>
         ))}
       </ul>
