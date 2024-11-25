@@ -8,22 +8,21 @@ export const AppProvider = ({ children }) => {
     const [movies, setMovies] = useState([]);
     const [rentals, setRentals] = useState([]);
     const [users, setUsers] = useState([]);
-    const [ratings, setRatings] = useState([]); // Add ratings state
+    const [ratings, setRatings] = useState([]); 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Fetch all initial data including ratings
         Promise.all([
             fetch('/movies').then((res) => res.json()),
             fetch('/rentals').then((res) => res.json()),
             fetch('/users').then((res) => res.json()),
-            fetch('/ratings').then((res) => res.json()), // Add ratings API endpoint
+            fetch('/ratings').then((res) => res.json()),
         ])
             .then(([moviesData, rentalsData, usersData, ratingsData]) => {
                 setMovies(moviesData);
                 setRentals(rentalsData);
                 setUsers(usersData);
-                setRatings(ratingsData); // Set the ratings data
+                setRatings(ratingsData);
                 setLoading(false);
             })
             .catch((error) => {
@@ -32,7 +31,7 @@ export const AppProvider = ({ children }) => {
             });
     }, []);
 
-    // Function to add a new rental
+
     const addRental = async (rentalData) => {
         try {
             const response = await fetch('/rentals', {
@@ -55,7 +54,7 @@ export const AppProvider = ({ children }) => {
         }
     };
 
-    // Function to add a new movie
+
     const addMovie = async (newMovie) => {
         try {
             const response = await fetch('/movies', {
@@ -75,7 +74,7 @@ export const AppProvider = ({ children }) => {
         }
     };
 
-    // Function to edit a movie
+
     const editMovie = async (updatedMovie) => {
         try {
             const response = await fetch(`/movies/${updatedMovie.id}`, {
@@ -104,7 +103,6 @@ export const AppProvider = ({ children }) => {
     
       
 
-    // Function to delete a movie
     const deleteMovie = async (movieId) => {
         try {
             const response = await fetch(`/movies/${movieId}`, { method: 'DELETE' });
@@ -121,8 +119,7 @@ export const AppProvider = ({ children }) => {
             console.error('Error deleting movie:', error);
         }
     };
-    
-        // Update rental (PATCH)
+          
         const updateRental = async (updatedRental) => {
             try {
                 const response = await fetch(`/rentals/${updatedRental.id}`, {
@@ -138,7 +135,6 @@ export const AppProvider = ({ children }) => {
                     throw new Error(`Failed to update rental: ${errorDetails.message || response.statusText}`);
                 }
 
-                // Update rental in state
                 const updatedRentalFromServer = await response.json();
                 setRentals((prevRentals) =>
                     prevRentals.map((rental) =>
@@ -150,15 +146,12 @@ export const AppProvider = ({ children }) => {
             }
         };
 
-        // Delete rental (DELETE)
         const deleteRental = async (rentalId) => {
             try {
-                // Ensure rentalId is valid before making the request
                 if (!rentalId) {
                     throw new Error('Rental ID is required for deletion');
                 }
 
-                // Optimistic UI update: Remove the rental locally first
                 setRentals((prevRentals) => prevRentals.filter((rental) => rental.id !== rentalId));
 
                 const response = await fetch(`/rentals/${rentalId}`, {
@@ -166,20 +159,15 @@ export const AppProvider = ({ children }) => {
                 });
 
                 if (!response.ok) {
-                    // If deletion fails, restore the rental to the state
                     setRentals((prevRentals) => [...prevRentals, { id: rentalId }]);
                     throw new Error(`Failed to delete rental. Status code: ${response.status}`);
                 }
-
-                // Optionally: Remove from related state if applicable (e.g., if rentals are linked to users or movies)
-                // You can remove the rental from other states (like users or movies) if needed.
             } catch (error) {
                 console.error('Error deleting rental:', error);
             }
         };
 
             
-        // Function to add a new user
         const addUser = async (newUser) => {
             try {
                 const response = await fetch('/users', {
@@ -202,26 +190,23 @@ export const AppProvider = ({ children }) => {
 
         const addRating = async (newRating) => {
             try {
-              // Make a POST request to add the new rating to the database using fetch
               const response = await fetch("/ratings", {
                 method: "POST",
                 headers: {
-                  "Content-Type": "application/json", // Ensure the server knows we're sending JSON
+                  "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  movie_id: newRating.movieId,  // Use backend key 'movie_id'
-                  user_id: newRating.userId,    // Use backend key 'user_id'
+                  movie_id: newRating.movieId,
+                  user_id: newRating.userId,
                   rating: newRating.rating,
                   review: newRating.review,
-                }), // Convert the new rating object to JSON
+                }),
               });
           
-              // Check if the response is successful (status code 200-299)
               if (!response.ok) {
                 throw new Error("Failed to add rating");
               }
           
-              // Parse the JSON response from the server
               const data = await response.json();
           
               // After the rating is added, update the context state with the new rating
@@ -245,8 +230,8 @@ export const AppProvider = ({ children }) => {
             setRatings,
             addMovie,
             addRental,
-            editMovie, // Add the editMovie method to the context
-            deleteMovie, // Add the deleteMovie method to the context
+            editMovie,
+            deleteMovie,
             updateRental,
             deleteRental,
             addUser,
