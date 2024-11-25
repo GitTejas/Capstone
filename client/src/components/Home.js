@@ -4,22 +4,20 @@ const Home = () => {
   // Generate a list of particles with random positions and sizes
   const particles = Array.from({ length: 20 }).map((_, index) => ({
     id: index,
-    size: `${Math.random() * 5 + 5}px`, // Random size between 5px and 10px
-    left: `${Math.random() * 100}vw`, // Random left position between 0 and 100vw
-    animationDelay: `${Math.random() * 10}s`, // Random delay to stagger animations
+    size: `${Math.random() * 5 + 5}px`,
+    left: `${Math.random() * 100}vw`, 
+    animationDelay: `${Math.random() * 10}s`, 
   }));
-
-  // Movie images for the slider
+  
+// Slide Show Images
   const images = [
     "https://cdn.marvel.com/content/2x/MLou2_Payoff_1-Sht_Online_DOM_v7_Sm.jpg",
     "https://cdn.marvel.com/content/1x/avengers_forever_14_infinity_saga_variant.jpg",
     "https://www.w3schools.com/w3images/fjords.jpg"
   ];
 
-  // State to track the current image index
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Function to go to the next slide
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
@@ -27,7 +25,7 @@ const Home = () => {
   // Automatically change slide every 3 seconds
   useEffect(() => {
     const interval = setInterval(nextSlide, 3000);
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval); 
   }, []);
 
   return (

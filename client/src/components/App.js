@@ -7,7 +7,7 @@ import Rentals from './Rentals';
 import Reviews from './Reviews';
 import Home from './Home';
 import Users from './Users';
-import Layout from './Layout'; // Create a new Layout component
+import Layout from './Layout';
 
 function App() {
   return (

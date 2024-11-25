@@ -5,10 +5,11 @@ import * as Yup from 'yup';
 
 const validationSchema = Yup.object({
   title: Yup.string()
-    .min(2, 'Title must be at least 2 characters') // Ensure title has a minimum of 3 characters
+    .min(2, 'Title must be at least 2 characters')
     .max(100, 'Title must be less than 100 characters')
     .required('Title is required'),
   genre: Yup.string()
+    .min(2, 'Genre must be at least 2 characters')
     .max(50, 'Genre must be less than 50 characters')
     .required('Genre is required'),
   release_year: Yup.number()
@@ -66,12 +67,11 @@ function Movies() {
         validationSchema={validationSchema}
         onSubmit={async (values, {resetForm}) => {
           if (editMovieData) {
-            // Ensure that the id is passed in the updated values
-            const updatedMovie = { ...values, id: editMovieData.id };  // Include the movie id
-            await editMovie(updatedMovie);  // Edit movie when updating
-            setEditMovieData(null);  // Clear edit state after submission
+            const updatedMovie = { ...values, id: editMovieData.id }; 
+            await editMovie(updatedMovie);  
+            setEditMovieData(null);  
           } else {
-            addMovie(values);  // Add movie when it's a new movie
+            addMovie(values);  
           }
           resetForm();
         }}

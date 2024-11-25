@@ -11,9 +11,9 @@ const Reviews = () => {
 
   const validationSchema = Yup.object().shape({
     movieId: Yup.string()
-      .required("You must select a movie"), // Enforces movie selection
+      .required("You must select a movie"),
     userId: Yup.string()
-      .required("You must select a user"), // Enforces user selection
+      .required("You must select a user"),
     rating: Yup.number()
       .required("Rating is required")
       .min(1, "Rating must be at least 1")
