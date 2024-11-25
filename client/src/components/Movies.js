@@ -74,7 +74,8 @@ function Movies() {
           const { getFieldProps, isSubmitting, touched, errors } = formik;
 
           return (
-            <Form className="mb-8">
+            <Form className="mb-8 bg-green-100 p-6 rounded-md shadow-lg">
+
               <h2 className="text-xl font-bold mb-4 text-gray-800">
                 {editMovieData ? 'Edit Movie' : 'Add a New Movie'}
               </h2>

@@ -4,7 +4,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 
-
 function Rentals() {
     const { rentals, loading, users, movies, addRental, updateRental, deleteRental } = useContext(AppContext);
 
@@ -56,7 +55,6 @@ function Rentals() {
         deleteRental(rentalId);
     };
 
-    // Sorting logic for rentals by user name, movie title, or due date
     const sortedRentals = [...rentals].sort((a, b) => {
         if (sortOption === 'user') {
             const userA = users.find((user) => user.id === a.user_id)?.name || '';
@@ -72,7 +70,6 @@ function Rentals() {
         return 0;
     });
 
-    // Group rentals by user and sort users alphabetically
     const rentalsByUser = users.map(user => {
         const userRentals = sortedRentals.filter(rental => rental.user_id === user.id);
         return { user, rentals: userRentals };
@@ -87,41 +84,40 @@ function Rentals() {
     }
 
     return (
-        <div className="min-h-screen bg-white text-gray-900">
-            <h2 className="text-2xl font-semibold mb-4">Rental List</h2>
+        <div className="min-h-screen bg-gray-50 text-gray-900">
+            <h2 className="text-3xl font-semibold text-center mb-6">Rental List</h2>
 
             {/* Introductory paragraph */}
-            <div className="bg-gradient-to-r from-teal-500 via-indigo-500 to-blue-600 text-white p-8 rounded-lg shadow-xl mb-8 border border-blue-400">
-            <p className="text-lg font-semibold">
-                In order to rent your favorite movies, you must be{' '}
-                <Link 
-                to="/users" 
-                className="underline font-bold text-yellow-200 hover:text-yellow-400"
-                >
-                signed up as a user
-                </Link>{' '}
-                in our system. Click the hyperlink to redirect you to the users page, enter your name and email to get started, and enjoy a seamless rental experience!
-            </p>
+            <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <p className="text-lg font-medium">
+                    In order to rent your favorite movies, you must be{' '}
+                    <Link
+                        to="/users"
+                        className="text-yellow-300 hover:text-yellow-500 font-semibold"
+                    >
+                        signed up as a user
+                    </Link>{' '}
+                    in our system. Click the link to get started and enjoy seamless rentals!
+                </p>
             </div>
 
             {/* Rental Form */}
             <form
                 onSubmit={formik.handleSubmit}
-                className="my-4 space-y-6 p-6 border border-gray-300 rounded-lg shadow-md bg-gray-100"
+                className="space-y-6 p-8 bg-white shadow-xl rounded-lg max-w-3xl mx-auto"
             >
-                <h3 className="text-lg font-medium">{editMode ? 'Edit Rental' : 'Add Rental'}</h3>
-
+                <h3 className="text-xl font-semibold">{editMode ? 'Edit Rental' : 'Add Rental'}</h3>
 
                 {/* User Select */}
-                <div>
-                    <label htmlFor="user_id" className="block text-sm font-medium text-gray-700">User</label>
+                <div className="space-y-2">
+                    <label htmlFor="user_id" className="text-sm font-medium text-gray-700">User</label>
                     <select
                         id="user_id"
                         name="user_id"
                         onChange={formik.handleChange}
                         value={formik.values.user_id}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                        disabled={editMode} // Disable the dropdown when editing
+                        className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        disabled={editMode}
                     >
                         <option value="">Select a user</option>
                         {users.map((user) => (
@@ -136,14 +132,14 @@ function Rentals() {
                 </div>
 
                 {/* Movie Select */}
-                <div>
-                    <label htmlFor="movie_id" className="block text-sm font-medium text-gray-700">Movie</label>
+                <div className="space-y-2">
+                    <label htmlFor="movie_id" className="text-sm font-medium text-gray-700">Movie</label>
                     <select
                         id="movie_id"
                         name="movie_id"
                         onChange={formik.handleChange}
                         value={formik.values.movie_id}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
+                        className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     >
                         <option value="">Select a movie</option>
                         {movies.map((movie) => (
@@ -158,15 +154,15 @@ function Rentals() {
                 </div>
 
                 {/* Due Date Input */}
-                <div>
-                    <label htmlFor="due_date" className="block text-sm font-medium text-gray-700">Due Date</label>
+                <div className="space-y-2">
+                    <label htmlFor="due_date" className="text-sm font-medium text-gray-700">Due Date</label>
                     <input
                         type="date"
                         id="due_date"
                         name="due_date"
                         onChange={formik.handleChange}
                         value={formik.values.due_date}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
+                        className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                     {formik.touched.due_date && formik.errors.due_date && (
                         <div className="text-red-500 text-sm mt-1">{formik.errors.due_date}</div>
@@ -175,23 +171,22 @@ function Rentals() {
 
                 <button
                     type="submit"
-                    className="w-full bg-blue-500 text-white py-2 rounded-md mt-4 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
+                    className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500"
                 >
                     {editMode ? 'Update Rental' : 'Add Rental'}
                 </button>
             </form>
 
             {/* Sorting Dropdown */}
-            <div className="relative mb-4">
-                <label htmlFor="sort" className="block text-sm font-medium text-gray-700">Sort By</label>
+            <div className="relative mb-6 max-w-xs mx-auto">
+                <label htmlFor="sort" className="text-sm font-medium text-gray-700">Sort By</label>
                 <select
                     id="sort"
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value)}
-                    className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                     <option value="">Select an option</option>
-                    {/* <option value="user">User Name (A-Z)</option> */}
                     <option value="movie">Movie Title (A-Z)</option>
                     <option value="due_date">Due Date (Earliest to Latest)</option>
                 </select>
@@ -202,44 +197,41 @@ function Rentals() {
                 <p className="text-center text-gray-500">No rentals found.</p>
             ) : (
                 sortedRentalsByUser.map((userGroup) => (
-                    <div key={userGroup.user.id}>
-                        <h3 className="text-lg font-medium mt-6">{userGroup.user.name}'s Rentals</h3>
+                    <div key={userGroup.user.id} className="space-y-4 mt-8">
+                        <h3 className="text-xl font-semibold">{userGroup.user.name}'s Rentals</h3>
                         {userGroup.rentals.length === 0 ? (
                             <p>No rentals found for {userGroup.user.name}.</p>
                         ) : (
-                            <div className="overflow-x-auto shadow-md rounded-lg mt-4">
+                            <div className="overflow-x-auto shadow-xl rounded-lg mt-4">
                                 <table className="min-w-full bg-white rounded-lg overflow-hidden">
-                                    <thead className="bg-blue-500 text-white">
+                                    <thead className="bg-indigo-600 text-white">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider">Movie</th>
-                                            <th className="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider">Due Date</th>
-                                            <th className="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider">Actions</th>
+                                            <th className="px-6 py-3 text-left text-sm font-medium uppercase">Movie</th>
+                                            <th className="px-6 py-3 text-left text-sm font-medium uppercase">Due Date</th>
+                                            <th className="px-6 py-3 text-left text-sm font-medium uppercase">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-200">
-                                        {userGroup.rentals.map((rental) => {
-                                            const movie = movies.find((movie) => movie.id === rental.movie_id);
-                                            return (
-                                                <tr key={rental.id}>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{movie?.title}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{new Date(rental.due_date).toLocaleDateString()}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <button
-                                                            onClick={() => handleEdit(rental)}
-                                                            className="text-blue-500 hover:text-blue-700"
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleDelete(rental.id)}
-                                                            className="ml-4 text-red-500 hover:text-red-700"
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
+                                    <tbody>
+                                        {userGroup.rentals.map((rental) => (
+                                            <tr key={rental.id} className="border-b">
+                                                <td className="px-6 py-4 text-sm">{movies.find(movie => movie.id === rental.movie_id)?.title}</td>
+                                                <td className="px-6 py-4 text-sm">{rental.due_date}</td>
+                                                <td className="px-6 py-4 text-sm">
+                                                    <button
+                                                        onClick={() => handleEdit(rental)}
+                                                        className="text-indigo-600 hover:text-indigo-800 mr-4"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(rental.id)}
+                                                        className="text-red-600 hover:text-red-800"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
