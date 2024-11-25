@@ -104,8 +104,7 @@ function Rentals() {
             {/* Rental Form */}
             <form
                 onSubmit={formik.handleSubmit}
-                className="space-y-6 p-8 bg-indigo-300 shadow-xl rounded-lg max-w-3xl mx-auto transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-
+                className="space-y-6 p-8 bg-gradient-to-br from-purple-400 via-blue-300 to-teal-100 shadow-xl rounded-lg max-w-3xl mx-auto transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
             >
                 <h3 className="text-xl font-semibold">{editMode ? 'Edit Rental' : 'Add Rental'}</h3>
 
@@ -200,25 +199,25 @@ function Rentals() {
             ) : (
                 sortedRentalsByUser.map((userGroup) => (
                     <div key={userGroup.user.id} className="space-y-4 mt-8">
-                        <h3 className="text-xl font-semibold">{userGroup.user.name}'s Rentals</h3>
+                        <h3 className="text-2xl font-bold text-indigo-800">{userGroup.user.name}'s Rentals</h3>
                         {userGroup.rentals.length === 0 ? (
-                            <p>No rentals found for {userGroup.user.name}.</p>
+                            <p className="text-lg">No rentals found for {userGroup.user.name}.</p>
                         ) : (
                             <div className="overflow-x-auto shadow-xl rounded-lg mt-4">
-                                <table className="min-w-full bg-white rounded-lg overflow-hidden">
+                                <table className="min-w-full bg-indigo-100 rounded-lg overflow-hidden">
                                     <thead className="bg-indigo-600 text-white">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-sm font-medium uppercase">Movie</th>
-                                            <th className="px-6 py-3 text-left text-sm font-medium uppercase">Due Date</th>
-                                            <th className="px-6 py-3 text-left text-sm font-medium uppercase">Actions</th>
+                                            <th className="px-6 py-3 text-left text-lg font-semibold uppercase">Movie</th>
+                                            <th className="px-6 py-3 text-left text-lg font-semibold uppercase">Due Date</th>
+                                            <th className="px-6 py-3 text-left text-lg font-semibold uppercase">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {userGroup.rentals.map((rental) => (
                                             <tr key={rental.id} className="border-b">
-                                                <td className="px-6 py-4 text-sm">{movies.find(movie => movie.id === rental.movie_id)?.title}</td>
-                                                <td className="px-6 py-4 text-sm">{rental.due_date}</td>
-                                                <td className="px-6 py-4 text-sm">
+                                                <td className="px-6 py-4 text-lg text-gray-800">{movies.find(movie => movie.id === rental.movie_id)?.title}</td>
+                                                <td className="px-6 py-4 text-lg text-gray-800">{rental.due_date}</td>
+                                                <td className="px-6 py-4 text-lg">
                                                     <button
                                                         onClick={() => handleEdit(rental)}
                                                         className="text-indigo-600 hover:text-indigo-800 mr-4"

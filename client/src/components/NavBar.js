@@ -46,6 +46,7 @@ function Navbar() {
           </Link>
         </li>
       </ul>
+      
       <div className="text-white font-semibold text-xl tracking-wide">
         <span>🎬 Movie App</span>
       </div>

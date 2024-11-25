@@ -4,8 +4,13 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 const validationSchema = Yup.object({
-  title: Yup.string().max(100, 'Title must be less than 100 characters').required('Title is required'),
-  genre: Yup.string().max(50, 'Genre must be less than 50 characters').required('Genre is required'),
+  title: Yup.string()
+    .min(2, 'Title must be at least 2 characters') // Ensure title has a minimum of 3 characters
+    .max(100, 'Title must be less than 100 characters')
+    .required('Title is required'),
+  genre: Yup.string()
+    .max(50, 'Genre must be less than 50 characters')
+    .required('Genre is required'),
   release_year: Yup.number()
     .min(1900, 'Release year must be later than 1900')
     .max(new Date().getFullYear(), 'Release year cannot be in the future')
@@ -59,7 +64,7 @@ function Movies() {
           image: editMovieData ? editMovieData.image : '',
         }}
         validationSchema={validationSchema}
-        onSubmit={async (values) => {
+        onSubmit={async (values, {resetForm}) => {
           if (editMovieData) {
             // Ensure that the id is passed in the updated values
             const updatedMovie = { ...values, id: editMovieData.id };  // Include the movie id
@@ -68,6 +73,7 @@ function Movies() {
           } else {
             addMovie(values);  // Add movie when it's a new movie
           }
+          resetForm();
         }}
       >
         {formik => {
