@@ -1,4 +1,4 @@
-# Movie Rental App
+# Movie Rental Tracker App
 
 This application allows users to browse a collection of movies, rent their favorites, and leave ratings and reviews. Explore our collection and share your thoughts on the movies you love!
 ---
