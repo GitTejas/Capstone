@@ -22,7 +22,7 @@ class User(db.Model, SerializerMixin):
 
     @validates("name")
     def validates_name(self, key, name):
-        if isinstance(name, str) and 2 <= len(name) <= 100:
+        if isinstance(name, str) and 0 <= len(name) <= 100:
             return name.strip()
         else:
             raise ValueError("Name must be a string with 2 to 100 characters.")

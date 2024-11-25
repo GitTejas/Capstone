@@ -8,7 +8,7 @@ const Home = () => {
     left: `${Math.random() * 100}vw`, 
     animationDelay: `${Math.random() * 10}s`, 
   }));
-  
+
 // Slide Show Images
   const images = [
     "https://cdn.marvel.com/content/2x/MLou2_Payoff_1-Sht_Online_DOM_v7_Sm.jpg",
@@ -24,7 +24,7 @@ const Home = () => {
 
   // Automatically change slide every 3 seconds
   useEffect(() => {
-    const interval = setInterval(nextSlide, 3000);
+    const interval = setInterval(nextSlide, 2000);
     return () => clearInterval(interval); 
   }, []);
 
