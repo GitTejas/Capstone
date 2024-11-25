@@ -5,16 +5,22 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const RatingsList = () => {
-  const { ratings, loading, movies, users, setRatings } = useContext(AppContext);
-
+  const { ratings, loading, movies, users, setRatings, addRating } = useContext(AppContext);
   const [showForm, setShowForm] = useState(false);
 
-  // Form validation schema with Yup
-  const validationSchema = Yup.object({
-    movieId: Yup.string().required("Movie is required"),
-    userId: Yup.string().required("User is required"),
-    rating: Yup.number().min(1).max(5).required("Rating is required"),
-    review: Yup.string().max(500, "Review cannot be more than 500 characters"),
+  const validationSchema = Yup.object().shape({
+    movieId: Yup.string()
+      .required("You must select a movie"), // Enforces movie selection
+    userId: Yup.string()
+      .required("You must select a user"), // Enforces user selection
+    rating: Yup.number()
+      .required("Rating is required")
+      .min(1, "Rating must be at least 1")
+      .max(5, "Rating cannot be more than 5"),
+    review: Yup.string()
+      .required("Review is required")
+      .min(2, "Review must be more than 1 character")
+      .max(500, "Review cannot exceed 500 characters"),
   });
 
   // Formik form handling
@@ -28,20 +34,21 @@ const RatingsList = () => {
     validationSchema,
     onSubmit: (values) => {
       const newRating = {
-        id: Date.now(), // Example of generating a unique ID
-        movie: movies.find((movie) => movie.id === parseInt(values.movieId)),
-        user: users.find((user) => user.id === parseInt(values.userId)),
+        movieId: parseInt(values.movieId), // Convert to number if needed
+        userId: parseInt(values.userId), // Convert to number if needed
         rating: parseInt(values.rating),
         review: values.review,
       };
-
-      setRatings((prevRatings) => [...prevRatings, newRating]);
-
+  
+      // Call addRating to send the new rating to the backend and update the context
+      addRating(newRating);
+  
       // Reset form after submission
       formik.resetForm();
       setShowForm(false); // Optionally hide form after submission
     },
   });
+  
 
   if (loading) {
     return <p className="text-center text-gray-500">Loading ratings...</p>;

@@ -209,7 +209,7 @@ class Ratings(Resource):
                 return make_response({'error': 'Movie or User not found'}, 404)
             # Create the new rental
             new_rating = Rating(
-                rating=json['score'],
+                rating=json['rating'],
                 review=json['review'],
                 movie=movie,  # Associate the movie object
                 user=user  # Associate the user object

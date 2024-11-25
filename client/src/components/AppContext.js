@@ -200,6 +200,37 @@ export const AppProvider = ({ children }) => {
         };
 
 
+        const addRating = async (newRating) => {
+            try {
+              // Make a POST request to add the new rating to the database using fetch
+              const response = await fetch("/ratings", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json", // Ensure the server knows we're sending JSON
+                },
+                body: JSON.stringify({
+                  movie_id: newRating.movieId,  // Use backend key 'movie_id'
+                  user_id: newRating.userId,    // Use backend key 'user_id'
+                  rating: newRating.rating,
+                  review: newRating.review,
+                }), // Convert the new rating object to JSON
+              });
+          
+              // Check if the response is successful (status code 200-299)
+              if (!response.ok) {
+                throw new Error("Failed to add rating");
+              }
+          
+              // Parse the JSON response from the server
+              const data = await response.json();
+          
+              // After the rating is added, update the context state with the new rating
+              setRatings((prevRatings) => [...prevRatings, data]);
+            } catch (error) {
+              console.error("Error adding rating:", error);
+            }
+          };
+          
     return (
         <AppContext.Provider value={{
             movies,
@@ -218,6 +249,7 @@ export const AppProvider = ({ children }) => {
             updateRental,
             deleteRental,
             addUser,
+            addRating,
         }}>
             {children}
         </AppContext.Provider>
