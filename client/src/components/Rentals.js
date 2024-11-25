@@ -104,7 +104,8 @@ function Rentals() {
             {/* Rental Form */}
             <form
                 onSubmit={formik.handleSubmit}
-                className="space-y-6 p-8 bg-white shadow-xl rounded-lg max-w-3xl mx-auto"
+                className="space-y-6 p-8 bg-indigo-300 shadow-xl rounded-lg max-w-3xl mx-auto transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
+
             >
                 <h3 className="text-xl font-semibold">{editMode ? 'Edit Rental' : 'Add Rental'}</h3>
 
@@ -178,7 +179,8 @@ function Rentals() {
             </form>
 
             {/* Sorting Dropdown */}
-            <div className="relative mb-6 max-w-xs mx-auto">
+            <div className="relative mb-6 mt-4 max-w-xs mx-auto">
+
                 <label htmlFor="sort" className="text-sm font-medium text-gray-700">Sort By</label>
                 <select
                     id="sort"

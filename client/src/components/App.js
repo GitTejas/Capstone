@@ -53,7 +53,7 @@ function App() {
           <Route path="/movies" element={<Layout><Movies /></Layout>} />
           <Route path="/rentals" element={<Rentals />} />
           <Route path="/users" element={<Users />} />
-          <Route path="/ratings" element={<Layout><Reviews /></Layout>} />
+          <Route path="/ratings" element={<Reviews />} />
         </Routes>
       </Router>
     </AppProvider>

@@ -74,7 +74,8 @@ function Movies() {
           const { getFieldProps, isSubmitting, touched, errors } = formik;
 
           return (
-            <Form className="mb-8 bg-green-100 p-6 rounded-md shadow-lg">
+            <Form className="mb-8 bg-gradient-to-r from-blue-200 via-blue-300 to-blue-400 p-8 rounded-xl shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+
 
               <h2 className="text-xl font-bold mb-4 text-gray-800">
                 {editMovieData ? 'Edit Movie' : 'Add a New Movie'}

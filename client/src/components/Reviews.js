@@ -71,7 +71,7 @@ const Reviews = () => {
 
       {/* Add/Edit Rating Form */}
       {showForm && (
-        <form onSubmit={formik.handleSubmit} className="space-y-4">
+        <form onSubmit={formik.handleSubmit} className="space-y-4 mb-8 bg-blue-200 p-6 rounded-md shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
           <div>
             <label htmlFor="movieId" className="block text-sm font-medium text-gray-700">Movie</label>
             <select

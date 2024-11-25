@@ -86,24 +86,24 @@ function Users() {
 
       {/* Display users and rented movies */}
       {users.length === 0 ? (
-        <p className="text-center text-gray-600">No users found.</p>
+        <p className="text-center text-gray-600 text-lg">No users found.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left text-gray-500 border-collapse">
-            <thead className="bg-gray-100">
+        <div className="overflow-x-auto mt-6 bg-white rounded-lg shadow-xl">
+          <table className="w-full text-lg text-left text-gray-700 border-collapse">
+            <thead className="bg-gray-200">
               <tr>
-                <th className="px-6 py-3 text-gray-600">Name</th>
-                <th className="px-6 py-3 text-gray-600">Email</th>
+                <th className="px-8 py-4 border-b border-gray-300">Name</th>
+                <th className="px-8 py-4 border-b border-gray-300">Email</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
                 <tr 
                   key={user.id} 
-                  className="hover:scale-105 hover:shadow-xl transform transition-all duration-300 ease-in-out"
+                  className="hover:bg-gray-100 hover:scale-105 hover:shadow-xl transition-all duration-300"
                 >
-                  <td className="px-6 py-4">{user.name}</td>
-                  <td className="px-6 py-4">{user.email}</td>
+                  <td className="px-8 py-4 border-b border-gray-200">{user.name}</td>
+                  <td className="px-8 py-4 border-b border-gray-200">{user.email}</td>
                 </tr>
               ))}
             </tbody>
