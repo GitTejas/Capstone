@@ -6,7 +6,7 @@ import * as Yup from "yup";
 const Reviews = () => {
   const { ratings, loading, movies, users, setRatings, addRating } = useContext(AppContext);
   const [showForm, setShowForm] = useState(false);
-  const [sortOption, setSortOption] = useState("latest"); 
+  const [sortOption, setSortOption] = useState(""); 
 
   const validationSchema = Yup.object().shape({
     movieId: Yup.string().required("You must select a movie"),
@@ -35,11 +35,11 @@ const Reviews = () => {
         userId: parseInt(values.userId),
         rating: parseInt(values.rating),
         review: values.review,
-        created_at: new Date().toISOString(), 
+        created_at: new Date().toISOString(),
       };
-
       addRating(newRating);
       formik.resetForm();
+      handleSort(sortOption);
       setShowForm(false);
     },
   });
@@ -79,6 +79,7 @@ const Reviews = () => {
         {showForm ? "Cancel" : "Add a New Review"}
       </button>
 
+
       {/* Sort By Dropdown */}
       <div className="mb-4">
         <label htmlFor="sort" className="block text-sm font-medium text-gray-700 mb-2">
@@ -90,6 +91,7 @@ const Reviews = () => {
           onChange={(e) => handleSort(e.target.value)}
           className="block w-full border-gray-300 rounded-md shadow-sm"
         >
+          <option value="">Select an option</option> {/* Default option */}
           <option value="latest">Latest Review Added</option>
           <option value="title">Movie Title (A-Z)</option>
           <option value="user">User Name (A-Z)</option>
