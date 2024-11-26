@@ -98,23 +98,21 @@ class MoviesById(Resource):
 
 
     def patch(self, id):
-        json = request.get_json()  # Get the JSON data from the request
-        movie = Movie.query.filter(Movie.id == id).first()  # Find the movie by id
+        json = request.get_json()
+        movie = Movie.query.filter(Movie.id == id).first()
 
         if movie:
-            # Validate input
             if not json.get('title') or not json.get('genre') or not json.get('release_year') or not json.get('image'):
                 return make_response({"error": "All fields (title, genre, release_year, image) are required"}, 400)
 
             try:
-                # Update movie fields
                 movie.title = json['title']
                 movie.genre = json['genre']
                 movie.release_year = json['release_year']
                 movie.image = json['image']
 
-                db.session.commit()  # Commit the changes to the database
-                return make_response(movie.to_dict(), 202)  # Return the updated movie
+                db.session.commit() 
+                return make_response(movie.to_dict(), 202)
             except Exception as e:
                 return make_response({"errors": "Failed to update movie", "message": str(e)}, 400)
         else:
@@ -145,11 +143,10 @@ class Rentals(Resource):
             
             if not movie or not user:
                 return make_response({'error': 'Movie or User not found'}, 404)
-            # Create the new rental
             new_rental = Rental(
                 due_date=json['due_date'],
-                movie=movie,  # Associate the movie object
-                user=user  # Associate the user object
+                movie=movie,  
+                user=user  
             )
             db.session.add(new_rental)
             db.session.commit()
@@ -211,8 +208,8 @@ class Ratings(Resource):
             new_rating = Rating(
                 rating=json['rating'],
                 review=json['review'],
-                movie=movie,  # Associate the movie object
-                user=user  # Associate the user object
+                movie=movie,  
+                user=user  
             )
             db.session.add(new_rating)
             db.session.commit()
@@ -225,7 +222,6 @@ class RatingsById(Resource):
         ratings = Rating.query.filter(Rating.id == id).first()
         return make_response(ratings.to_dict(), 200)
 
-# Register resources with routes
 api.add_resource(Users, '/users')
 api.add_resource(UsersById, "/users/<int:id>")
 
