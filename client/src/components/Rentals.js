@@ -64,7 +64,6 @@ function Rentals() {
         deleteRental(rentalId);
     };
 
-
     const sortedRentals = [...rentals].sort((a, b) => {
         if (sortOption === 'user') {
             const userA = users.find((user) => user.id === a.user_id)?.name || '';
@@ -88,6 +87,13 @@ function Rentals() {
     const sortedRentalsByUser = rentalsByUser.sort((a, b) => 
         a.user.name.localeCompare(b.user.name)
     );
+
+    const rentedMoviesByUser = (userId) => {
+        return rentals
+            .filter((rental) => rental.user_id === userId) // Only include rentals by the current user
+            .map((rental) => rental.movie_id);
+    };
+    
 
     if (loading) {
         return <p>Loading rentals...</p>;
@@ -141,33 +147,37 @@ function Rentals() {
                     )}
                 </div>
 
-            {/* Movie Select */}
-            <div className="space-y-2">
-                <label htmlFor="movie_id" className="text-sm font-medium text-gray-700">Movie</label>
-                <select
+                {/* Movie Select */}
+                <div className="space-y-2">
+                    <label htmlFor="movie_id" className="text-sm font-medium text-gray-700">Movie</label>
+                    <select
                     id="movie_id"
                     name="movie_id"
                     onChange={formik.handleChange}
-                    value={formik.values.movie_id || selectedMovie.id || ''} // Use selectedMovie.id if available
+                    value={formik.values.movie_id || ''} // Ensure default selection works
                     className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    disabled={!formik.values.user_id} // Disable the dropdown if no user is selected
                 >
-                    <option value="">Select a movie</option>
-                    {/* Show selectedMovie first if it exists */}
-                    {selectedMovie.title && (
-                        <option value={selectedMovie.id}>{selectedMovie.title}</option>
-                    )}
-                    {/* Populate all movies */}
-                    {movies.map((movie) => (
-                        <option key={movie.id} value={movie.id}>
-                            {movie.title}
-                        </option>
-                    ))}
-                </select>
-                {formik.touched.movie_id && formik.errors.movie_id && (
-                    <div className="text-red-500 text-sm mt-1">{formik.errors.movie_id}</div>
-                )}
-            </div>
+                    <option value="">
+                        {formik.values.user_id ? 'Select a movie' : 'Select a user first'}
+                    </option>
+                    {movies.map((movie) => {
+                        const isRented =
+                            formik.values.user_id &&
+                            rentedMoviesByUser(formik.values.user_id).includes(movie.id);
 
+                        return (
+                            <option key={movie.id} value={movie.id} disabled={isRented}>
+                                {movie.title} {isRented ? '(Already Rented)' : ''}
+                            </option>
+                        );
+                    })}
+                </select>
+
+                    {formik.touched.movie_id && formik.errors.movie_id && (
+                        <div className="text-red-500 text-sm mt-1">{formik.errors.movie_id}</div>
+                    )}
+                </div>
 
                 {/* Due Date Input */}
                 <div className="space-y-2">
@@ -195,7 +205,6 @@ function Rentals() {
 
             {/* Sorting Dropdown */}
             <div className="relative mb-6 mt-4 max-w-xs mx-auto">
-
                 <label htmlFor="sort" className="text-sm font-medium text-gray-700">Sort By</label>
                 <select
                     id="sort"
@@ -207,7 +216,7 @@ function Rentals() {
                     <option value="movie">Movie Title (A-Z)</option>
                     <option value="due_date">Due Date (Earliest to Latest)</option>
                 </select>
-            </div> 
+            </div>
 
             {/* Rentals by User */}
             {sortedRentalsByUser.length === 0 ? (
@@ -223,26 +232,26 @@ function Rentals() {
                                 <table className="min-w-full bg-indigo-100 rounded-lg overflow-hidden">
                                     <thead className="bg-indigo-600 text-white">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-lg font-semibold uppercase">Movie</th>
-                                            <th className="px-6 py-3 text-left text-lg font-semibold uppercase">Due Date</th>
-                                            <th className="px-6 py-3 text-left text-lg font-semibold uppercase">Actions</th>
+                                            <th className="px-6 py-3 text-left text-sm font-medium">Movie Title</th>
+                                            <th className="px-6 py-3 text-left text-sm font-medium">Due Date</th>
+                                            <th className="px-6 py-3 text-center text-sm font-medium">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="divide-y divide-indigo-200">
                                         {userGroup.rentals.map((rental) => (
-                                            <tr key={rental.id} className="border-b">
-                                                <td className="px-6 py-4 text-lg text-gray-800">{movies.find(movie => movie.id === rental.movie_id)?.title}</td>
-                                                <td className="px-6 py-4 text-lg text-gray-800">{rental.due_date}</td>
-                                                <td className="px-6 py-4 text-lg">
+                                            <tr key={rental.id} className="hover:bg-indigo-50">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{movies.find((movie) => movie.id === rental.movie_id)?.title}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm">{rental.due_date}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-center">
                                                     <button
                                                         onClick={() => handleEdit(rental)}
-                                                        className="text-indigo-600 hover:text-indigo-800 mr-4"
+                                                        className="px-4 py-2 mr-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                                                     >
                                                         Edit
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(rental.id)}
-                                                        className="text-red-600 hover:text-red-800"
+                                                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
                                                     >
                                                         Delete
                                                     </button>
