@@ -1,15 +1,17 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from './AppContext';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 function Rentals() {
     const { rentals, loading, users, movies, addRental, updateRental, deleteRental } = useContext(AppContext);
-
     const [sortOption, setSortOption] = useState('');
     const [editMode, setEditMode] = useState(false);
     const [currentRental, setCurrentRental] = useState(null);
+    const location = useLocation();
+    const selectedMovie = location.state?.selectedMovie || {};
 
     const formik = useFormik({
         initialValues: {
@@ -33,8 +35,15 @@ function Rentals() {
                 addRental(values);
             }
             formik.resetForm();
+            location.state = { selectedMovie: null };
         },
     });
+
+    useEffect(() => {
+        if (selectedMovie.id) {
+            formik.setFieldValue('movie_id', selectedMovie.id);
+        }
+    }, [selectedMovie]);
 
     const handleEdit = (rental) => {
         setEditMode(true);
@@ -54,6 +63,7 @@ function Rentals() {
     const handleDelete = (rentalId) => {
         deleteRental(rentalId);
     };
+
 
     const sortedRentals = [...rentals].sort((a, b) => {
         if (sortOption === 'user') {
@@ -131,27 +141,33 @@ function Rentals() {
                     )}
                 </div>
 
-                {/* Movie Select */}
-                <div className="space-y-2">
-                    <label htmlFor="movie_id" className="text-sm font-medium text-gray-700">Movie</label>
-                    <select
-                        id="movie_id"
-                        name="movie_id"
-                        onChange={formik.handleChange}
-                        value={formik.values.movie_id}
-                        className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    >
-                        <option value="">Select a movie</option>
-                        {movies.map((movie) => (
-                            <option key={movie.id} value={movie.id}>
-                                {movie.title}
-                            </option>
-                        ))}
-                    </select>
-                    {formik.touched.movie_id && formik.errors.movie_id && (
-                        <div className="text-red-500 text-sm mt-1">{formik.errors.movie_id}</div>
+            {/* Movie Select */}
+            <div className="space-y-2">
+                <label htmlFor="movie_id" className="text-sm font-medium text-gray-700">Movie</label>
+                <select
+                    id="movie_id"
+                    name="movie_id"
+                    onChange={formik.handleChange}
+                    value={formik.values.movie_id || selectedMovie.id || ''} // Use selectedMovie.id if available
+                    className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                    <option value="">Select a movie</option>
+                    {/* Show selectedMovie first if it exists */}
+                    {selectedMovie.title && (
+                        <option value={selectedMovie.id}>{selectedMovie.title}</option>
                     )}
-                </div>
+                    {/* Populate all movies */}
+                    {movies.map((movie) => (
+                        <option key={movie.id} value={movie.id}>
+                            {movie.title}
+                        </option>
+                    ))}
+                </select>
+                {formik.touched.movie_id && formik.errors.movie_id && (
+                    <div className="text-red-500 text-sm mt-1">{formik.errors.movie_id}</div>
+                )}
+            </div>
+
 
                 {/* Due Date Input */}
                 <div className="space-y-2">

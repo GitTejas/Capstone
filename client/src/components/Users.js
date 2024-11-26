@@ -6,24 +6,26 @@ import { Link } from 'react-router-dom';
 
 
 function Users() {
-  const { users, rentals, loading, movies, addUser } = useContext(AppContext);
+  const { users, loading, addUser } = useContext(AppContext);
 
-  // Formik setup for adding a new user
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-      email: '',
-    },
-    validationSchema: Yup.object({
-      name: Yup.string().required('Name is required'),
-      email: Yup.string().email('Invalid email address').required('Email is required'),
-    }),
-    onSubmit: (values) => {
-      addUser(values); // Call the addUser function from context
-      formik.resetForm(); // Reset the form after submission
-    },
-  });
-  
+const formik = useFormik({
+  initialValues: {
+    name: '',
+    email: '',
+  },
+  validationSchema: Yup.object({
+    name: Yup.string()
+      .min(2, 'Name must be at least 2 characters long')
+      .required('Name is required'),
+    email: Yup.string()
+      .email('Invalid email address')
+      .required('Email is required'),
+  }),
+  onSubmit: (values) => {
+    addUser(values); 
+    formik.resetForm(); 
+  },
+});
 
   if (loading) {
     return <p className="text-center text-gray-500">Loading users...</p>;
@@ -48,9 +50,16 @@ function Users() {
       </div>
 
       {/* Form for adding a new user */}
-      <form onSubmit={formik.handleSubmit} className="mb-8 space-y-6 bg-gradient-to-r from-blue-500 to-teal-400 p-6 rounded-xl shadow-xl">
-        <h3 className="text-2xl font-bold text-white mb-4">Add New User</h3>
-        <div className="mb-6">
+      <form
+        onSubmit={formik.handleSubmit}
+        className="mb-8 space-y-6 p-6 rounded-xl shadow-xl bg-gradient-to-r from-blue-400 to-teal-300 relative overflow-hidden"
+      >
+        {/* Shimmer effect - Ensure it's behind the form */}
+        <div className="absolute inset-0 bg-shimmer-gradient animate-shimmer bg-[length:200%_100%] z-0"></div>
+
+        <h3 className="relative text-2xl font-bold text-white mb-4 z-10">Add New User</h3>
+
+        <div className="relative mb-6 z-10">
           <label htmlFor="name" className="block text-white text-lg font-semibold">Name</label>
           <input
             id="name"
@@ -63,7 +72,8 @@ function Users() {
             <div className="text-red-400 text-sm mt-2">{formik.errors.name}</div>
           ) : null}
         </div>
-        <div className="mb-6">
+
+        <div className="relative mb-6 z-10">
           <label htmlFor="email" className="block text-white text-lg font-semibold">Email</label>
           <input
             id="email"
@@ -76,13 +86,15 @@ function Users() {
             <div className="text-red-400 text-sm mt-2">{formik.errors.email}</div>
           ) : null}
         </div>
-        <button 
-          type="submit" 
-          className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition duration-300 shadow-md hover:shadow-lg"
+
+        <button
+          type="submit"
+          className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition duration-300 shadow-md hover:shadow-lg z-10"
         >
           Add User
         </button>
       </form>
+
 
       {/* Display users and rented movies */}
       {users.length === 0 ? (

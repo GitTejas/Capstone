@@ -1,19 +1,16 @@
 import React, { useState, useContext } from "react";
 import { AppContext } from "./AppContext";
-import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const Reviews = () => {
   const { ratings, loading, movies, users, setRatings, addRating } = useContext(AppContext);
   const [showForm, setShowForm] = useState(false);
-
+  const [sortOption, setSortOption] = useState("latest"); 
 
   const validationSchema = Yup.object().shape({
-    movieId: Yup.string()
-      .required("You must select a movie"),
-    userId: Yup.string()
-      .required("You must select a user"),
+    movieId: Yup.string().required("You must select a movie"),
+    userId: Yup.string().required("You must select a user"),
     rating: Yup.number()
       .required("Rating is required")
       .min(1, "Rating must be at least 1")
@@ -24,7 +21,6 @@ const Reviews = () => {
       .max(500, "Review cannot exceed 500 characters"),
   });
 
-  // Formik form handling
   const formik = useFormik({
     initialValues: {
       movieId: "",
@@ -35,19 +31,33 @@ const Reviews = () => {
     validationSchema,
     onSubmit: (values) => {
       const newRating = {
-        movieId: parseInt(values.movieId), 
-        userId: parseInt(values.userId), 
+        movieId: parseInt(values.movieId),
+        userId: parseInt(values.userId),
         rating: parseInt(values.rating),
         review: values.review,
+        created_at: new Date().toISOString(), 
       };
-  
+
       addRating(newRating);
-  
       formik.resetForm();
-      setShowForm(false); 
+      setShowForm(false);
     },
   });
-  
+
+  const handleSort = (option) => {
+    setSortOption(option);
+    let sortedRatings = [...ratings];
+
+    if (option === "latest") {
+      sortedRatings.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    } else if (option === "title") {
+      sortedRatings.sort((a, b) => a.movie.title.localeCompare(b.movie.title));
+    } else if (option === "user") {
+      sortedRatings.sort((a, b) => a.user.name.localeCompare(b.user.name));
+    }
+
+    setRatings(sortedRatings);
+  };
 
   if (loading) {
     return <p className="text-center text-gray-500">Loading ratings...</p>;
@@ -69,11 +79,33 @@ const Reviews = () => {
         {showForm ? "Cancel" : "Add a New Review"}
       </button>
 
+      {/* Sort By Dropdown */}
+      <div className="mb-4">
+        <label htmlFor="sort" className="block text-sm font-medium text-gray-700 mb-2">
+          Sort By:
+        </label>
+        <select
+          id="sort"
+          value={sortOption}
+          onChange={(e) => handleSort(e.target.value)}
+          className="block w-full border-gray-300 rounded-md shadow-sm"
+        >
+          <option value="latest">Latest Review Added</option>
+          <option value="title">Movie Title (A-Z)</option>
+          <option value="user">User Name (A-Z)</option>
+        </select>
+      </div>
+
       {/* Add/Edit Rating Form */}
       {showForm && (
-        <form onSubmit={formik.handleSubmit} className="space-y-4 mb-8 bg-blue-200 p-6 rounded-md shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+        <form
+          onSubmit={formik.handleSubmit}
+          className="space-y-4 mb-8 bg-blue-200 p-6 rounded-md shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+        >
           <div>
-            <label htmlFor="movieId" className="block text-sm font-medium text-gray-700">Movie</label>
+            <label htmlFor="movieId" className="block text-sm font-medium text-gray-700">
+              Movie
+            </label>
             <select
               id="movieId"
               name="movieId"
@@ -94,7 +126,9 @@ const Reviews = () => {
           </div>
 
           <div>
-            <label htmlFor="userId" className="block text-sm font-medium text-gray-700">User</label>
+            <label htmlFor="userId" className="block text-sm font-medium text-gray-700">
+              User
+            </label>
             <select
               id="userId"
               name="userId"
@@ -115,7 +149,9 @@ const Reviews = () => {
           </div>
 
           <div>
-            <label htmlFor="rating" className="block text-sm font-medium text-gray-700">Rating (1-5)</label>
+            <label htmlFor="rating" className="block text-sm font-medium text-gray-700">
+              Rating (1-5)
+            </label>
             <input
               id="rating"
               name="rating"
@@ -132,7 +168,9 @@ const Reviews = () => {
           </div>
 
           <div>
-            <label htmlFor="review" className="block text-sm font-medium text-gray-700">Review</label>
+            <label htmlFor="review" className="block text-sm font-medium text-gray-700">
+              Review
+            </label>
             <textarea
               id="review"
               name="review"
@@ -147,11 +185,8 @@ const Reviews = () => {
           </div>
 
           <div className="mt-4">
-            <button
-              type="submit"
-              className="bg-blue-500 text-white py-2 px-4 rounded"
-            >
-              {"Submit Review"}
+            <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
+              Submit Review
             </button>
           </div>
         </form>
@@ -160,7 +195,10 @@ const Reviews = () => {
       {/* Display Existing Ratings */}
       <ul className="space-y-6 mt-8">
         {ratings.map((rating) => (
-          <li key={rating.id} className="p-6 bg-gradient-to-r from-blue-100 via-blue-200 to-indigo-300 border-2 border-transparent rounded-lg shadow-lg hover:scale-105 transform transition-all duration-300 ease-in-out">
+          <li
+            key={rating.id}
+            className="p-6 bg-gradient-to-r from-blue-100 via-blue-200 to-indigo-300 border-2 border-transparent rounded-lg shadow-lg hover:scale-105 transform transition-all duration-300 ease-in-out"
+          >
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
                 <p className="text-xl font-semibold text-gray-900 mb-1">{rating.movie.title}</p>

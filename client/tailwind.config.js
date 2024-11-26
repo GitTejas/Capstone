@@ -8,6 +8,7 @@ module.exports = {
         'particle-float': 'float 5s infinite ease-in-out',
         'smooth-fade': 'fadeIn 2s ease-out',
         'bubble-fall': 'bubbleFall 10s infinite ease-in-out', // Change name to bubbleFall
+        'shimmer': 'shimmer 2s infinite linear', // Add shimmer animation
       },
       keyframes: {
         float: {
@@ -24,6 +25,10 @@ module.exports = {
           '50%': { transform: 'translateY(300px)', opacity: 0.7 }, // Fall down to 300px
           '100%': { transform: 'translateY(-100px)', opacity: 1 }, // Reset to top (falling loop)
         },
+        shimmer: { // Add shimmer keyframes
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
         slideLoop: {
           '0%': { transform: 'translateX(0)' },
           '25%': { transform: 'translateX(-100%)' },
@@ -31,6 +36,9 @@ module.exports = {
           '75%': { transform: 'translateX(-300%)' },
           '100%': { transform: 'translateX(-400%)' },
         },
+      },
+      backgroundImage: {
+        'shimmer-gradient': 'linear-gradient(90deg, rgba(255, 255, 255, 0.1) 25%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 75%)',
       },
     },
   },

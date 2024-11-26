@@ -1,7 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState} from 'react';
 import { AppContext } from './AppContext';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+
 
 const validationSchema = Yup.object({
   title: Yup.string()
@@ -22,9 +24,11 @@ const validationSchema = Yup.object({
 });
 
 function Movies() {
-  const { movies, loading, addMovie, setMovies, editMovie, deleteMovie } = useContext(AppContext);
+  const { movies, loading, addMovie, editMovie, deleteMovie } = useContext(AppContext);
   const [editMovieData, setEditMovieData] = useState(null);
   const [sortOption, setSortOption] = useState('title');
+  const navigate = useNavigate();
+
 
   const handleEdit = (movie) => {
     setEditMovieData(movie);
@@ -49,6 +53,11 @@ function Movies() {
   };
 
   const sortedMovies = sortMovies(movies, sortOption);
+
+  const handleRent = (movie) => {
+    navigate('/rentals', { state: { selectedMovie: movie } });
+  };
+
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading movies...</p>;
@@ -80,7 +89,7 @@ function Movies() {
           const { getFieldProps, isSubmitting, touched, errors } = formik;
 
           return (
-            <Form className="mb-8 bg-gradient-to-r from-blue-200 via-blue-300 to-blue-400 p-8 rounded-xl shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+            <Form className="mb-8 bg-gradient-to-r from-blue-200 via-blue-300 to-blue-400 p-8 rounded-xl shadow-2xl transform transition-all duration-300 hover:shadow-[0_0_20px_5px_rgba(0,255,255,0.7)] animate-shimmer">
 
 
               <h2 className="text-xl font-bold mb-4 text-gray-800">
@@ -166,6 +175,9 @@ function Movies() {
                   <button onClick={() => deleteMovie(movie.id)} className="bg-red-500 text-white py-2 px-4 rounded-md">
                     Delete
                   </button>
+                  <button onClick={() => handleRent(movie)} className="bg-green-500 text-white py-2 px-4 rounded-md">
+                Rent
+              </button>
                 </td>
               </tr>
             ))}
