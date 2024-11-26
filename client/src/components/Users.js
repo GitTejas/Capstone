@@ -95,7 +95,6 @@ const formik = useFormik({
         </button>
       </form>
 
-
       {/* Display users and rented movies */}
       {users.length === 0 ? (
         <p className="text-center text-gray-600 text-lg">No users found.</p>
