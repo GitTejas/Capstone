@@ -64,8 +64,16 @@ Form validation with Yup ensures that data integrity is maintained on both the f
 
 ## Usage
 Add and Manage Movies: Add new movies with their details.
+
+
 Rent a Movie: Rent a movie and choose a due date to return the movie.
-User Sign-Up: Become a user of the service in order to start renting movies. Requierd to have contact information before booking a rental!
+
+
+User (Sign-Up): Become a user of the service in order to start renting movies. Requierd to have contact information before booking a rental!
+
+
+Review a Movie: Review a movie and give it a rating out of 5 stars!.
+
 
 ## Form Handling
 Formik is utilized for handling form submissions, and Yup is employed for schema-based validation, ensuring reliable input management across the application.
