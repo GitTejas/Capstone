@@ -195,16 +195,14 @@ export const AppProvider = ({ children }) => {
         return () => clearInterval(interval);
     }, []);
 
-// useEffect that sets selected movie based on location state
 useEffect(() => {
     if (location.state?.selectedMovie) {
-        setSelectedMovie(location.state.selectedMovie); // Set movie when location state is available
+        setSelectedMovie(location.state.selectedMovie); 
     }
 }, [location.state]);
 
-// Optional: Manually set the movie from location or external source
 const setMovieFromLocation = (movie) => {
-    setSelectedMovie(movie); // Manually set selected movie if needed
+    setSelectedMovie(movie); 
 };
 
     return (
