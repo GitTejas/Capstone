@@ -22,26 +22,36 @@ Database: SQLAlchemy
 
 ## Models
 1.	User - Represents users of the rental service.
-o	Attributes: id, name, email
+|	Attributes: id, name, email
 2.	Movie - Represents the movies available for rent.
-o	Attributes: id, title, genre, release year and image
+|	Attributes: id, title, genre, release year and image
 3.	Rental - Represents the rentals.
-o	Attributes: id, user_id (FK), movie_id (FK), due_date
+|	Attributes: id, user_id, movie_id, due_date
 4.	Rating - Represents the reviews and ratings given by users to movies.
-o	Attributes: id, user_id (FK), movie_id (FK), rating, review
+|	Attributes: id, user_id, movie_id, rating, review
 
 
 ## Relationships
 
 Many-to-Many (A user can rent multiple movies, and a movie can be rented by multiple users):
-o	user ⇔ movie through rental.
-o	movie ⇔ user through review.
+
+
+user ⇔ movie through rental.
+
+movie ⇔ user through review.
+
+
 
 One-to-Many:
-o	user → rental.
-o	user → rating.
-o	movie → rental.
-o	movie → rating.
+
+
+user → rental
+
+user → rating
+
+movie → rental
+
+movie → rating
 
 
 ## Database Integrity
