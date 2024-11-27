@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from flask import request, make_response, abort
 from flask_restful import Resource
 from sqlalchemy import func
