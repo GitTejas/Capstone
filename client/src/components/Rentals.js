@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 
 function Rentals() {
-    const { rentals, loading, users, movies, addRental, updateRental, deleteRental, selectedMovie } = useContext(AppContext);
+    const { rentals, loading, users, movies, addRental, updateRental, deleteRental, selectedMovie, setSelectedMovie } = useContext(AppContext);
     const [sortOption, setSortOption] = useState('');
     const [editMode, setEditMode] = useState(false);
     const [currentRental, setCurrentRental] = useState(null);
@@ -13,7 +13,7 @@ function Rentals() {
     const formik = useFormik({
         initialValues: {
             user_id: '',
-            movie_id: selectedMovie?.id || '', 
+            movie_id: selectedMovie ? selectedMovie.id : '',  // Default to the selected movie or empty if none
             due_date: '',
         },
         validationSchema: Yup.object({
@@ -31,9 +31,19 @@ function Rentals() {
             } else {
                 addRental(values);
             }
-            formik.resetForm();  
+    
+            // Reset movie selection and form after submission
+            setSelectedMovie(null);  // Clear the selected movie
+            formik.resetForm({
+                values: {
+                    user_id: '', 
+                    movie_id: '',  // Reset the movie_id to an empty string
+                    due_date: '',
+                }
+            });  
         },
     });
+    
 
     const handleEdit = (rental) => {
         setEditMode(true);

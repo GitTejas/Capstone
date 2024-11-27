@@ -55,7 +55,7 @@ const formik = useFormik({
         className="mb-8 space-y-6 p-6 rounded-xl shadow-xl bg-gradient-to-r from-blue-400 to-teal-300 relative overflow-hidden"
       >
         {/* Shimmer effect - Ensure it's behind the form */}
-        <div className="absolute inset-0 bg-shimmer-gradient animate-shimmer bg-[length:200%_100%] z-0"></div>
+        <div ></div>
 
         <h3 className="relative text-2xl font-bold text-white mb-4 z-10">Add New User</h3>
 

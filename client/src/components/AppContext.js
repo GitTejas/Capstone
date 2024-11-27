@@ -195,15 +195,17 @@ export const AppProvider = ({ children }) => {
         return () => clearInterval(interval);
     }, []);
 
-    useEffect(() => {
-        if (location.state?.selectedMovie) {
-            setSelectedMovie(location.state.selectedMovie); // Set movie when location state is available
-        }
-    }, [location.state]); // Only trigger when location.state changes
+// useEffect that sets selected movie based on location state
+useEffect(() => {
+    if (location.state?.selectedMovie) {
+        setSelectedMovie(location.state.selectedMovie); // Set movie when location state is available
+    }
+}, [location.state]);
 
-    const setMovieFromLocation = (movie) => {
-        setSelectedMovie(movie); // You can manually set the selected movie if needed
-    };
+// Optional: Manually set the movie from location or external source
+const setMovieFromLocation = (movie) => {
+    setSelectedMovie(movie); // Manually set selected movie if needed
+};
 
     return (
         <AppContext.Provider
@@ -229,6 +231,7 @@ export const AppProvider = ({ children }) => {
                 addRating,
                 selectedMovie,
                 setMovieFromLocation,
+                setSelectedMovie,
             }}
         >
             {children}
