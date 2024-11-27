@@ -24,7 +24,7 @@ const validationSchema = Yup.object({
 });
 
 function Movies() {
-  const { movies, loading, addMovie, editMovie, deleteMovie } = useContext(AppContext);
+  const { movies, loading, addMovie, editMovie, deleteMovie, setMovieFromLocation  } = useContext(AppContext);
   const [editMovieData, setEditMovieData] = useState(null);
   const [sortOption, setSortOption] = useState('title');
   const navigate = useNavigate();
@@ -55,9 +55,9 @@ function Movies() {
   const sortedMovies = sortMovies(movies, sortOption);
 
   const handleRent = (movie) => {
-    navigate('/rentals', { state: { selectedMovie: movie } });
+    setMovieFromLocation(movie); // Set the selected movie in context
+    navigate('/rentals'); // Navigate to the rentals page
   };
-
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading movies...</p>;

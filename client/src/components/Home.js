@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext  } from 'react';
+import { AppContext } from './AppContext';
 
 const Home = () => {
+  const { currentIndex, images } = useContext(AppContext);
+
   // Generate a list of particles with random positions and sizes
   const particles = Array.from({ length: 20 }).map((_, index) => ({
     id: index,
@@ -8,25 +11,6 @@ const Home = () => {
     left: `${Math.random() * 100}vw`, 
     animationDelay: `${Math.random() * 10}s`, 
   }));
-
-// Slide Show Images
-  const images = [
-    "https://cdn.marvel.com/content/2x/MLou2_Payoff_1-Sht_Online_DOM_v7_Sm.jpg",
-    "https://cdn.marvel.com/content/1x/avengers_forever_14_infinity_saga_variant.jpg",
-    "https://www.w3schools.com/w3images/fjords.jpg"
-  ];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-
-  // Automatically change slide every 3 seconds
-  useEffect(() => {
-    const interval = setInterval(nextSlide, 2000);
-    return () => clearInterval(interval); 
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-gray-800 to-gray-900 text-gray-100 px-4 relative overflow-hidden">

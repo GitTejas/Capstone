@@ -11,8 +11,8 @@ import Layout from './Layout';
 
 function App() {
   return (
-    <AppProvider>
-      <Router>
+    <Router>  {/* Move Router here */}
+      <AppProvider>  {/* Wrap AppProvider inside Router */}
         <Navbar />
         <Routes>
           <Route path="/" element={<Layout><Home /></Layout>} />
@@ -21,8 +21,8 @@ function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/ratings" element={<Reviews />} />
         </Routes>
-      </Router>
-    </AppProvider>
+      </AppProvider>
+    </Router>
   );
 }
 

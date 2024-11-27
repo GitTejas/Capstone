@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-
+import { useLocation } from 'react-router-dom';
 // Create the context
 export const AppContext = createContext();
 
@@ -10,6 +10,9 @@ export const AppProvider = ({ children }) => {
     const [users, setUsers] = useState([]);
     const [ratings, setRatings] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedMovie, setSelectedMovie] = useState(null);
+    const location = useLocation();
+
 
     useEffect(() => {
         Promise.all([
@@ -29,6 +32,7 @@ export const AppProvider = ({ children }) => {
                 setLoading(false);
             });
     }, []);
+
 
     const addRental = (rentalData) => {
         fetch('/rentals', {
@@ -174,6 +178,33 @@ export const AppProvider = ({ children }) => {
             .catch(() => {});
     };
 
+    const images = [
+        "https://cdn.marvel.com/content/2x/MLou2_Payoff_1-Sht_Online_DOM_v7_Sm.jpg",
+        "https://cdn.marvel.com/content/1x/avengers_forever_14_infinity_saga_variant.jpg",
+        "https://www.w3schools.com/w3images/fjords.jpg",
+    ];
+
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const nextSlide = () => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    };
+
+    useEffect(() => {
+        const interval = setInterval(nextSlide, 2000);
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        if (location.state?.selectedMovie) {
+            setSelectedMovie(location.state.selectedMovie); // Set movie when location state is available
+        }
+    }, [location.state]); // Only trigger when location.state changes
+
+    const setMovieFromLocation = (movie) => {
+        setSelectedMovie(movie); // You can manually set the selected movie if needed
+    };
+
     return (
         <AppContext.Provider
             value={{
@@ -182,6 +213,8 @@ export const AppProvider = ({ children }) => {
                 users,
                 ratings,
                 loading,
+                currentIndex,
+                images,
                 setMovies,
                 setRentals,
                 setUsers,
@@ -194,6 +227,8 @@ export const AppProvider = ({ children }) => {
                 deleteRental,
                 addUser,
                 addRating,
+                selectedMovie,
+                setMovieFromLocation,
             }}
         >
             {children}

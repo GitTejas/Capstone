@@ -1,22 +1,19 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { AppContext } from './AppContext';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
 
 function Rentals() {
-    const { rentals, loading, users, movies, addRental, updateRental, deleteRental } = useContext(AppContext);
+    const { rentals, loading, users, movies, addRental, updateRental, deleteRental, selectedMovie } = useContext(AppContext);
     const [sortOption, setSortOption] = useState('');
     const [editMode, setEditMode] = useState(false);
     const [currentRental, setCurrentRental] = useState(null);
-    const location = useLocation();
-    const selectedMovie = location.state?.selectedMovie || {};
 
     const formik = useFormik({
         initialValues: {
             user_id: '',
-            movie_id: '',
+            movie_id: selectedMovie?.id || '', 
             due_date: '',
         },
         validationSchema: Yup.object({
@@ -34,16 +31,9 @@ function Rentals() {
             } else {
                 addRental(values);
             }
-            formik.resetForm();
-            location.state = { selectedMovie: null };
+            formik.resetForm();  
         },
     });
-
-    useEffect(() => {
-        if (selectedMovie.id) {
-            formik.setFieldValue('movie_id', selectedMovie.id);
-        }
-    }, [selectedMovie]);
 
     const handleEdit = (rental) => {
         setEditMode(true);
