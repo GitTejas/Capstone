@@ -3,8 +3,9 @@ import { AppContext } from "./AppContext";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
+
 const Reviews = () => {
-  const { ratings, loading, movies, users, setRatings, addRating } = useContext(AppContext);
+  const { ratings, loading, movies, users, setRatings, addRating, deleteReview } = useContext(AppContext);
   const [showForm, setShowForm] = useState(false);
   const [sortOption, setSortOption] = useState(""); 
 
@@ -219,6 +220,12 @@ const Reviews = () => {
 
             <div className="text-sm text-gray-500 flex justify-between items-center">
               <p>Rating Date: {new Date(rating.created_at).toLocaleDateString()}</p>
+              <button
+              onClick={() => deleteReview(rating.id)}
+              className="text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-semibold py-2 px-6 rounded-lg shadow-md transform transition-all duration-300 hover:scale-105 active:scale-95"
+            >
+              Delete Review
+            </button>
             </div>
           </li>
         ))}

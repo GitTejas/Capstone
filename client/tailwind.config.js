@@ -9,6 +9,7 @@ module.exports = {
         'smooth-fade': 'fadeIn 2s ease-out',
         'bubble-fall': 'bubbleFall 10s infinite ease-in-out', // Change name to bubbleFall
         'shimmer': 'shimmer 2s infinite linear', // Add shimmer animation
+        'glowing': 'glowing 3s ease-in-out infinite', // Add glowing text animation
       },
       keyframes: {
         float: {
@@ -35,6 +36,17 @@ module.exports = {
           '50%': { transform: 'translateX(-200%)' },
           '75%': { transform: 'translateX(-300%)' },
           '100%': { transform: 'translateX(-400%)' },
+        },
+        glowing: { // Dramatic glowing animation
+          '0%': {
+            textShadow: '0 0 10px #fff, 0 0 15px #fff, 0 0 30px #ff00ff, 0 0 50px #ff00ff', // Start with faint glow
+          },
+          '50%': {
+            textShadow: '0 0 20px #fff, 0 0 30px #ff00ff, 0 0 60px #ff00ff, 0 0 100px #ff00ff', // Intense glow
+          },
+          '100%': {
+            textShadow: '0 0 10px #fff, 0 0 15px #fff, 0 0 30px #ff00ff, 0 0 50px #ff00ff', // Fade back to faint glow
+          },
         },
       },
       backgroundImage: {

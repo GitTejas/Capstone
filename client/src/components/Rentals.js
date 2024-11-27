@@ -44,7 +44,6 @@ function Rentals() {
         },
     });
     
-
     const handleEdit = (rental) => {
         setEditMode(true);
         setCurrentRental(rental);
@@ -63,6 +62,7 @@ function Rentals() {
     const handleDelete = (rentalId) => {
         deleteRental(rentalId);
     };
+
 
     const sortedRentals = [...rentals].sort((a, b) => {
         if (sortOption === 'user') {
@@ -94,14 +94,21 @@ function Rentals() {
             .map((rental) => rental.movie_id);
     };
     
-
     if (loading) {
         return <p>Loading rentals...</p>;
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 text-gray-900">
-            <h2 className="text-3xl font-semibold text-center mb-6">Rental List</h2>
+        <div className="min-h-screen bg-gray-50 text-gray-900"
+        style={{
+            backgroundImage: "url('https://img.freepik.com/free-photo/dark-vip-cinema-studio-still-life_23-2149500591.jpg?t=st=1732734145~exp=1732737745~hmac=2835c7bf6b170278dc22c9ea9548540984d1ecc13b849ad16034e148a0c3621d&w=2000')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center',
+            minHeight: '100vh',
+          }} 
+        >
+            <h2 className="text-3xl font-semibold text-white text-center mb-6">Rental List</h2>
+
 
             {/* Introductory paragraph */}
             <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-6 rounded-xl shadow-lg mb-8">
@@ -205,7 +212,7 @@ function Rentals() {
 
             {/* Sorting Dropdown */}
             <div className="relative mb-6 mt-4 max-w-xs mx-auto">
-                <label htmlFor="sort" className="text-sm font-medium text-gray-700">Sort By</label>
+                <label htmlFor="sort" className="text-sm font-medium text-gray-100">Sort By</label>
                 <select
                     id="sort"
                     value={sortOption}
@@ -224,9 +231,10 @@ function Rentals() {
             ) : (
                 sortedRentalsByUser.map((userGroup) => (
                     <div key={userGroup.user.id} className="space-y-4 mt-8">
-                        <h3 className="text-2xl font-bold text-indigo-800">{userGroup.user.name}'s Rentals</h3>
+                        <h3 className="text-2xl font-extrabold text-yellow-400 hover:text-yellow-500 transition-all duration-300 text-shadow-xl">{userGroup.user.name}'s Rentals</h3>
+
                         {userGroup.rentals.length === 0 ? (
-                            <p className="text-lg">No rentals found for {userGroup.user.name}.</p>
+                            <p className="text-lg text-gray-100">No rentals found for {userGroup.user.name}.</p>
                         ) : (
                             <div className="overflow-x-auto shadow-xl rounded-lg mt-4">
                                 <table className="min-w-full bg-indigo-100 rounded-lg overflow-hidden">
@@ -255,6 +263,16 @@ function Rentals() {
                                                     >
                                                         Delete
                                                     </button>
+                                                    <Link
+                                                    to={{
+                                                        pathname: "/ratings",
+                                                        state: { movie: movies.find((movie) => movie.id === rental.movie_id) },
+                                                    }}
+                                                    className="px-5 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 mx-2"
+                                                >
+                                                    Review
+                                                </Link>
+
                                                 </td>
                                             </tr>
                                         ))}

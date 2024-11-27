@@ -195,15 +195,33 @@ export const AppProvider = ({ children }) => {
         return () => clearInterval(interval);
     }, []);
 
-useEffect(() => {
-    if (location.state?.selectedMovie) {
-        setSelectedMovie(location.state.selectedMovie); 
-    }
-}, [location.state]);
 
-const setMovieFromLocation = (movie) => {
-    setSelectedMovie(movie); 
-};
+    useEffect(() => {
+        if (location.state?.selectedMovie) {
+            setSelectedMovie(location.state.selectedMovie); 
+        }
+    }, [location.state]);
+
+    const setMovieFromLocation = (movie) => {
+        setSelectedMovie(movie); 
+    };
+
+    const deleteReview = (ratingId) => {
+        if (!ratingId) {
+            return;
+        }
+
+        setRatings((prevRatings) => prevRatings.filter((rating) => rating.id !== ratingId));
+
+        fetch(`/ratings/${ratingId}`, { method: 'DELETE' })
+            .then((response) => {
+                if (!response.ok) {
+                    setRatings((prevRatings) => [...prevRatings, { id: ratingId }]);
+                }
+            })
+            .catch(() => {
+            });
+    };
 
     return (
         <AppContext.Provider
@@ -230,6 +248,7 @@ const setMovieFromLocation = (movie) => {
                 selectedMovie,
                 setMovieFromLocation,
                 setSelectedMovie,
+                deleteReview,
             }}
         >
             {children}

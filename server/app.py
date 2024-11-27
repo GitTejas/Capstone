@@ -4,7 +4,7 @@ from flask import request, make_response, abort
 from flask_restful import Resource
 from sqlalchemy import func
 from config import app, db, api
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+# from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 from models import User, Movie, Rental, Rating
 
@@ -221,6 +221,16 @@ class RatingsById(Resource):
     def get(self, id):
         ratings = Rating.query.filter(Rating.id == id).first()
         return make_response(ratings.to_dict(), 200)
+    
+    def delete(self, id):
+        rating = Rating.query.filter(Rating.id == id).first()
+
+        if rating:
+            db.session.delete(rating)
+            db.session.commit()
+            return {}, 204
+        else:
+            return {'error': 'Review not found'}, 404
 
 api.add_resource(Users, '/users')
 api.add_resource(UsersById, "/users/<int:id>")
