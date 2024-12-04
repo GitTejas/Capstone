@@ -7,16 +7,15 @@ import Rentals from './Rentals';
 import Reviews from './Reviews';
 import Home from './Home';
 import Users from './Users';
-import Layout from './Layout';
 
 function App() {
   return (
-    <Router>  {/* Move Router here */}
-      <AppProvider>  {/* Wrap AppProvider inside Router */}
+    <Router>
+      <AppProvider>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Layout><Home /></Layout>} />
-          <Route path="/movies" element={<Layout><Movies /></Layout>} />
+          <Route path="/" element={<Home />} />
+          <Route path="/movies" element={<Movies />} />
           <Route path="/rentals" element={<Rentals />} />
           <Route path="/users" element={<Users />} />
           <Route path="/ratings" element={<Reviews />} />
