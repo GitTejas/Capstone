@@ -55,8 +55,8 @@ function Movies() {
   const sortedMovies = sortMovies(movies, sortOption);
 
   const handleRent = (movie) => {
-    setMovieFromLocation(movie); // Set the selected movie in context
-    navigate('/rentals'); // Navigate to the rentals page
+    setMovieFromLocation(movie); 
+    navigate('/rentals'); 
   };
 
   if (loading) {

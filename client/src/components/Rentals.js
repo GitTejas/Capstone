@@ -5,8 +5,6 @@ import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import mtheatre from '../assets/mtheatre.jpg';
 
-
-
 function Rentals() {
     const { rentals, loading, users, movies, addRental, updateRental, deleteRental, selectedMovie, setSelectedMovie } = useContext(AppContext);
     const [sortOption, setSortOption] = useState('');
