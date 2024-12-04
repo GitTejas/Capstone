@@ -15,7 +15,7 @@ User Management and Sign Up: Sign up as a user in order to be able to rent
 
 
 ## Tech Stack
-Frontend: React, Formik and Yup, useEffect, TailWind
+Frontend: React, Formik and Yup, useContext, TailWind
 Backend: Flask (Flask-RESTful for API endpoints)
 Database: SQLAlchemy
 
@@ -38,20 +38,20 @@ Many-to-Many (A user can rent multiple movies, and a movie can be rented by mult
 
 user ⇔ movie through rental.
 
-movie ⇔ user through review.
+user ⇔ movie through review.
 
 
 
-One-to-Many:
-
-
-user → rental
-
-user → rating
+One-to-Many (A movie can have multiple rentals, and a movie can have multiple reviews):
 
 movie → rental
 
 movie → rating
+
+user → rental (A user can have multiple rentals)
+
+user → rating (A user can make multiple ratings/reviews)
+
 
 
 ## Database Integrity
@@ -69,7 +69,7 @@ Add and Manage Movies: Add new movies with their details.
 Rent a Movie: Rent a movie and choose a due date to return the movie.
 
 
-User (Sign-Up): Become a user of the service in order to start renting movies. Requierd to have contact information before booking a rental!
+User (sign-up): Become a user of the service in order to start renting movies. Requierd to have contact information before booking a rental!
 
 
 Review a Movie: Review a movie and give it a rating out of 5 stars!.
