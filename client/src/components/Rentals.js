@@ -14,7 +14,7 @@ function Rentals() {
     const formik = useFormik({
         initialValues: {
             user_id: '',
-            movie_id: selectedMovie ? selectedMovie.id : '',  // Default to the selected movie or empty if none
+            movie_id: selectedMovie ? selectedMovie.id : '', 
             due_date: '',
         },
         validationSchema: Yup.object({
@@ -33,12 +33,11 @@ function Rentals() {
                 addRental(values);
             }
     
-            // Reset movie selection and form after submission
-            setSelectedMovie(null);  // Clear the selected movie
+            setSelectedMovie(null); 
             formik.resetForm({
                 values: {
                     user_id: '', 
-                    movie_id: '',  // Reset the movie_id to an empty string
+                    movie_id: '', 
                     due_date: '',
                 }
             });  
@@ -91,7 +90,7 @@ function Rentals() {
 
     const rentedMoviesByUser = (userId) => {
         return rentals
-            .filter((rental) => rental.user_id === userId) // Only include rentals by the current user
+            .filter((rental) => rental.user_id === userId) 
             .map((rental) => rental.movie_id);
     };
     
@@ -162,9 +161,9 @@ function Rentals() {
                     id="movie_id"
                     name="movie_id"
                     onChange={formik.handleChange}
-                    value={formik.values.movie_id || ''} // Ensure default selection works
+                    value={formik.values.movie_id || ''} 
                     className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    disabled={!formik.values.user_id} // Disable the dropdown if no user is selected
+                    disabled={!formik.values.user_id} 
                 >
                     <option value="">
                         {formik.values.user_id ? 'Select a movie' : 'Select a user first'}

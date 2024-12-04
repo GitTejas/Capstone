@@ -46,10 +46,6 @@ const formik = useFormik({
               User List
             </h2>
 
-
-
-
-
       {/* Introductory paragraph */}
       <div className="bg-gradient-to-l from-purple-400 via-pink-500 to-red-500 text-white p-6 rounded-lg shadow-md mb-6">
         <p className="text-lg font-medium">

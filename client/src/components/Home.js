@@ -4,7 +4,7 @@ import { AppContext } from './AppContext';
 const Home = () => {
   const { currentIndex, images } = useContext(AppContext);
 
-  // Generate a list of particles with random positions and sizes
+  // Generate particles with random positions and sizes
   const particles = Array.from({ length: 20 }).map((_, index) => ({
     id: index,
     size: `${Math.random() * 5 + 5}px`,
