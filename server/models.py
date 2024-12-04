@@ -5,7 +5,6 @@ from sqlalchemy import func
 from config import db
 from datetime import datetime
 import re
-# from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"

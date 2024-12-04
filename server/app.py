@@ -3,8 +3,6 @@ from flask import request, make_response, abort
 from flask_restful import Resource
 from sqlalchemy import func
 from config import app, db, api
-# from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-
 from models import User, Movie, Rental, Rating
 
 @app.route('/')
@@ -188,7 +186,7 @@ class RentalsById(Resource):
         else:
             return {'error': 'Rental not found'}, 404
 
-# Rating Resource
+# Rating/Review Resource
 class Ratings(Resource):
 
     def get(self):
@@ -203,7 +201,7 @@ class Ratings(Resource):
             
             if not movie or not user:
                 return make_response({'error': 'Movie or User not found'}, 404)
-            # Create the new rental
+
             new_rating = Rating(
                 rating=json['rating'],
                 review=json['review'],

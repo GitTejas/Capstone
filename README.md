@@ -23,7 +23,7 @@ Database: SQLAlchemy
 ## Models
 1.	User - Represents users of the rental service.
 |	Attributes: id, name, email
-2.	Movie - Represents the movies available for rent.
+2.	Movie - Represents the movies available.
 |	Attributes: id, title, genre, release year and image
 3.	Rental - Represents the rentals.
 |	Attributes: id, user_id, movie_id, due_date
