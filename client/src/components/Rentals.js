@@ -3,6 +3,9 @@ import { AppContext } from './AppContext';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
+import mtheatre from '../assets/mtheatre.jpg';
+
+
 
 function Rentals() {
     const { rentals, loading, users, movies, addRental, updateRental, deleteRental, selectedMovie, setSelectedMovie } = useContext(AppContext);
@@ -101,7 +104,7 @@ function Rentals() {
     return (
         <div className="min-h-screen bg-gray-50 text-gray-900"
         style={{
-            backgroundImage: "url('https://img.freepik.com/free-photo/dark-vip-cinema-studio-still-life_23-2149500591.jpg?t=st=1732734145~exp=1732737745~hmac=2835c7bf6b170278dc22c9ea9548540984d1ecc13b849ad16034e148a0c3621d&w=2000')",
+            backgroundImage: `url(${mtheatre})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center center',
             minHeight: '100vh',
