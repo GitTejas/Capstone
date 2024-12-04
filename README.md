@@ -33,20 +33,19 @@ Database: SQLAlchemy
 
 ## Relationships
 
-Many-to-Many (A user can rent multiple movies, and a movie can be rented by multiple users):
+Many-to-Many:
+
+user ⇔ movie through rental. (A user can rent multiple movies, and a movie can be rented by multiple users)
+
+user ⇔ movie through review. (A user can review/rate multiple movies, and a movie can be reviewed/rated by multiple users)
 
 
-user ⇔ movie through rental.
 
-user ⇔ movie through review.
+One-to-Many:
 
+movie → rental (A movie can have multiple rentals)
 
-
-One-to-Many (A movie can have multiple rentals, and a movie can have multiple reviews):
-
-movie → rental
-
-movie → rating
+movie → rating (A movie can have multiple reviews)
 
 user → rental (A user can have multiple rentals)
 
