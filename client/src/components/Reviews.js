@@ -220,12 +220,12 @@ const Reviews = () => {
 
             <div className="text-sm text-gray-500 flex justify-between items-center">
               <p>Rating Date: {new Date(rating.created_at).toLocaleDateString()}</p>
-              <button
+              {/* <button
               onClick={() => deleteReview(rating.id)}
               className="text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-semibold py-2 px-6 rounded-lg shadow-md transform transition-all duration-300 hover:scale-105 active:scale-95"
             >
               Delete Review
-            </button>
+            </button> */}
             </div>
           </li>
         ))}
