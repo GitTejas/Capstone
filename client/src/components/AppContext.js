@@ -178,6 +178,24 @@ export const AppProvider = ({ children }) => {
             .catch(() => {});
     };
 
+
+    const deleteReview = (ratingId) => {
+        if (!ratingId) {
+            return;
+        }
+
+        setRatings((prevRatings) => prevRatings.filter((rating) => rating.id !== ratingId));
+
+        fetch(`/ratings/${ratingId}`, { method: 'DELETE' })
+            .then((response) => {
+                if (!response.ok) {
+                    setRatings((prevRatings) => [...prevRatings, { id: ratingId }]);
+                }
+            })
+            .catch(() => {
+            });
+    };
+
     const images = [
         "https://cdn.marvel.com/content/2x/MLou2_Payoff_1-Sht_Online_DOM_v7_Sm.jpg",
         "https://cdn.marvel.com/content/1x/avengers_forever_14_infinity_saga_variant.jpg",
@@ -206,22 +224,6 @@ export const AppProvider = ({ children }) => {
         setSelectedMovie(movie); 
     };
 
-    const deleteReview = (ratingId) => {
-        if (!ratingId) {
-            return;
-        }
-
-        setRatings((prevRatings) => prevRatings.filter((rating) => rating.id !== ratingId));
-
-        fetch(`/ratings/${ratingId}`, { method: 'DELETE' })
-            .then((response) => {
-                if (!response.ok) {
-                    setRatings((prevRatings) => [...prevRatings, { id: ratingId }]);
-                }
-            })
-            .catch(() => {
-            });
-    };
 
     return (
         <AppContext.Provider
