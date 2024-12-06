@@ -5,7 +5,6 @@ import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import starry from '../assets/starry.jpg';
 
-
 function Users() {
   const { users, loading, addUser } = useContext(AppContext);
 
